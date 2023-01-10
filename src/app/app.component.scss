@@ -1,0 +1,20 @@
+:host {
+  @import "../themes/generated/variables.base.scss";
+  background-color: darken($base-bg, 5.00);
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+@font-face {
+  font-family: 'iranyekan';
+    src: url("../assets/fonts/iranyekan/eot/iranyekanwebmediumfanum.eot");
+    src: url('../assets/fonts/iranyekan/woff/iranyekanwebmediumfanum.woff') format('woff'),
+         url('../assets/fonts/iranyekan/ttf/iranyekanwebmediumfanum.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.iranyekan {
+  font-family: 'iranyekan';
+}
