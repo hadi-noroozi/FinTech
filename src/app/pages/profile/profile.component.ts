@@ -12,16 +12,16 @@ export class ProfileComponent {
   constructor() {
     this.employee = {
       ID: 7,
-      FirstName: 'Sandra',
-      LastName: 'Johnson',
-      Prefix: 'Mrs.',
+      FirstName: 'علیرضا',
+      LastName: 'عمرانی',
+      Prefix: 'آقای',
       Position: 'Controller',
-      Picture: 'images/employees/06.png',
+      Picture: 'images/employees/07.png',
       BirthDate: new Date('1974/11/15'),
       HireDate: new Date('2005/05/11'),
       /* tslint:disable-next-line:max-line-length */
-      Notes: 'Sandra is a CPA and has been our controller since 2008. She loves to interact with staff so if you`ve not met her, be certain to say hi.\r\n\r\nSandra has 2 daughters both of whom are accomplished gymnasts.',
-      Address: '4600 N Virginia Rd.'
+      Notes: 'معاون بخش آمار و اطلاعات بیمه ایران',
+      Address: 'تهران، برزیل غربی، ساختمان مرکزی بیمه ایران، طبقه 12، بخش آمار و برنامه ریزی'
     };
     this.colCountByScreen = {
       xs: 1,

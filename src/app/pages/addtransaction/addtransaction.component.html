@@ -124,10 +124,11 @@
                           <p class="text-justify p-3">
                             پیش نمایش چندسطر اولیه داده ها را مشاهده و بررسی نمایید
                             و در صورت صحت و درستی ساختار داده ها بر روی دکمه تایید و ادامه کلیک کنید.
-          
                           </p>
+
                           <dx-data-grid 
-                            id="gridContainer2" [dataSource]="headRecords" 
+                            id="gridContainer2" 
+                            [dataSource]="headRecords" 
                             [hoverStateEnabled]="true"
                             [rowAlternationEnabled]="true"
                             [showColumnLines]="false"
@@ -138,8 +139,10 @@
                             [columnAutoWidth]="true"
                             [showBorders]="false"
                             [rtlEnabled]="true"
+                            [columnAutoWidth]="true"
                             [remoteOperations]="true">
 
+                            <!--
                             <dxi-column 
                                 dataField="POLICY_NO"
                                 dataType="string"
@@ -218,34 +221,49 @@
                                 caption="خسارت معوق">
                                 <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
                             </dxi-column>                                                                                                           
-
-                            <!--
-                            <dxi-column
-                                *dxTemplate="let item of headRecords"
-                                [dataField]="item" 
-                                dataType="number" 
-                                [caption]="
-                                    (item == 'POLICY_NO') ? 'شماره بیمه نامه' :
-                                    (item == 'PERSON_ID') ? 'شناسه بیمه گزار' :   
-                                    (item == 'PERSON_NAME') ? 'عنوان بیمه گزار' :
-                                    (item == 'FIELD_NAME') ? 'رشته' :  
-                                    (item == 'SUBFIELD_NAME') ? 'زیر رشته' :
-                                    (item == 'PORVINCE_NAME') ? 'استان' :  
-                                    (item == 'ISSUE_DATE') ? 'تاریخ صدور' :
-                                    (item == 'START_DATE') ? 'تاریخ شروع' :  
-                                    (item == 'END_DATE') ? 'تاریخ پایان' :
-                                    (item == 'PREMIUM') ? 'حق بیمه' :  
-                                    (item == 'DUE_DEBT') ? 'مطالبات سررسیدشده' :
-                                    (item == 'NOT_DUE_DEBT') ? 'مطالبات سررسیدنشده' :
-                                    (item == 'DAMAGE') ? 'خسارت' :
-                                    (item == 'OVERDUE_DAMAGE') ? 'خسارت معوق' :  ''              
-                                ">
-                            </dxi-column> 
                             -->
-
+                            
+                            <dxi-column
+                                *ngFor="let item of arrayKey"
+                                [dataField]="item.key" 
+                                [dataType]="
+                                    (
+                                        (item.key == 'ISSUE_DATE') ||
+                                        (item.key == 'START_DATE') ||
+                                        (item.key == 'END_DATE')
+                                    ) ? date : item.type
+                                " 
+                                [caption]="
+                                    (item.key == 'POLICY_NO') ? 'شماره بیمه نامه' :
+                                    (item.key == 'PERSON_ID') ? 'شناسه بیمه گزار' :   
+                                    (item.key == 'PERSON_NAME') ? 'عنوان بیمه گزار' :
+                                    (item.key == 'FIELD_NAME') ? 'رشته' :  
+                                    (item.key == 'SUBFIELD_NAME') ? 'زیر رشته' :
+                                    (item.key == 'PORVINCE_NAME') ? 'استان' :  
+                                    (item.key == 'ISSUE_DATE') ? 'تاریخ صدور' :
+                                    (item.key == 'START_DATE') ? 'تاریخ شروع' :  
+                                    (item.key == 'END_DATE') ? 'تاریخ پایان' :
+                                    (item.key == 'PREMIUM') ? 'حق بیمه' :  
+                                    (item.key == 'DUE_DEBT') ? 'مطالبات سررسیدشده' :
+                                    (item.key == 'NOT_DUE_DEBT') ? 'مطالبات سررسیدنشده' :
+                                    (item.key == 'DAMAGE') ? 'خسارت' :
+                                    (item.key == 'OVERDUE_DAMAGE') ? 'خسارت معوق' :  ''              
+                                ">
+                                <dxo-format 
+                                    type="fixedPoint" 
+                                    [precision]="0" 
+                                    *ngIf="
+                                        (item.key == 'PREMIUM') ||
+                                        (item.key == 'DUE_DEBT') ||
+                                        (item.key == 'NOT_DUE_DEBT') ||
+                                        (item.key == 'DAMAGE') ||
+                                        (item.key == 'OVERDUE_DAMAGE')
+                                    ">
+                                </dxo-format>
+                            </dxi-column> 
+                            
                             <dxo-load-panel [enabled]="true"></dxo-load-panel>
                             <dxo-scrolling mode="infinite"></dxo-scrolling>
-
                           </dx-data-grid>
           
                         </div>
@@ -271,8 +289,8 @@
                             در صورت نیاز به ویرایش داده های موجود را ویرایش کنید.
                           </p>
                           <dx-data-grid 
-                            id="gridContainer2" [dataSource]="records" 
-                            keyExpr="POLICY_NO"
+                            id="gridContainer3" 
+                            [dataSource]="records" 
                             [hoverStateEnabled]="true"
                             [rowAlternationEnabled]="true"
                             [showColumnLines]="false"
@@ -286,6 +304,7 @@
                             height="55vh"
                             [remoteOperations]="true">
 
+                            <!--
                             <dxi-column 
                                 dataField="POLICY_NO"
                                 dataType="string"
@@ -376,30 +395,41 @@
                                 caption="خسارت معوق">
                                 <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
                             </dxi-column>                                                                                                           
-
-                            <!--
-                            <dxi-column
-                                *dxTemplate="let item of headRecords"
-                                [dataField]="item" 
-                                dataType="number" 
-                                [caption]="
-                                    (item == 'POLICY_NO') ? 'شماره بیمه نامه' :
-                                    (item == 'PERSON_ID') ? 'شناسه بیمه گزار' :   
-                                    (item == 'PERSON_NAME') ? 'عنوان بیمه گزار' :
-                                    (item == 'FIELD_NAME') ? 'رشته' :  
-                                    (item == 'SUBFIELD_NAME') ? 'زیر رشته' :
-                                    (item == 'PORVINCE_NAME') ? 'استان' :  
-                                    (item == 'ISSUE_DATE') ? 'تاریخ صدور' :
-                                    (item == 'START_DATE') ? 'تاریخ شروع' :  
-                                    (item == 'END_DATE') ? 'تاریخ پایان' :
-                                    (item == 'PREMIUM') ? 'حق بیمه' :  
-                                    (item == 'DUE_DEBT') ? 'مطالبات سررسیدشده' :
-                                    (item == 'NOT_DUE_DEBT') ? 'مطالبات سررسیدنشده' :
-                                    (item == 'DAMAGE') ? 'خسارت' :
-                                    (item == 'OVERDUE_DAMAGE') ? 'خسارت معوق' :  ''              
-                                ">
-                            </dxi-column> 
                             -->
+                            
+                            <dxi-column
+                                *ngFor="let item of arrayKey"
+                                [dataField]="item.key" 
+                                [dataType]="item.type" 
+                                [caption]="
+                                    (item.key == 'POLICY_NO') ? 'شماره بیمه نامه' :
+                                    (item.key == 'PERSON_ID') ? 'شناسه بیمه گزار' :   
+                                    (item.key == 'PERSON_NAME') ? 'عنوان بیمه گزار' :
+                                    (item.key == 'FIELD_NAME') ? 'رشته' :  
+                                    (item.key == 'SUBFIELD_NAME') ? 'زیر رشته' :
+                                    (item.key == 'PORVINCE_NAME') ? 'استان' :  
+                                    (item.key == 'ISSUE_DATE') ? 'تاریخ صدور' :
+                                    (item.key == 'START_DATE') ? 'تاریخ شروع' :  
+                                    (item.key == 'END_DATE') ? 'تاریخ پایان' :
+                                    (item.key == 'PREMIUM') ? 'حق بیمه' :  
+                                    (item.key == 'DUE_DEBT') ? 'مطالبات سررسیدشده' :
+                                    (item.key == 'NOT_DUE_DEBT') ? 'مطالبات سررسیدنشده' :
+                                    (item.key == 'DAMAGE') ? 'خسارت' :
+                                    (item.key == 'OVERDUE_DAMAGE') ? 'خسارت معوق' :  ''              
+                                ">
+                                <dxo-format 
+                                    type="fixedPoint" 
+                                    [precision]="0" 
+                                    *ngIf="
+                                        (item.key == 'PREMIUM') ||
+                                        (item.key == 'DUE_DEBT') ||
+                                        (item.key == 'NOT_DUE_DEBT') ||
+                                        (item.key == 'DAMAGE') ||
+                                        (item.key == 'OVERDUE_DAMAGE')
+                                    ">
+                                </dxo-format>
+                            </dxi-column> 
+
                             <dxo-paging [enabled]="false"></dxo-paging>
                             <dxo-editing
                               mode="batch"
@@ -417,7 +447,7 @@
                     </div>
                     <div class="col-12 text-center py-3" >
                         <dx-button class="next-btn mx-1" stylingMode="conatined" type="success" text="ثبت و ادامه" icon="check"
-                          [rtlEnabled]="rtlEnabled" (onClick)="submitTwo()" *ngIf="records.length > 0">
+                          [rtlEnabled]="rtlEnabled" (onClick)="submitTwo()" [disabled]="!records.length">
           
                         </dx-button>
                         <dx-button class="reset-btn mx-1" stylingMode="outlined" type="danger" text="بازگشت" icon="back"
@@ -431,14 +461,48 @@
         <section class="step-box step-three" [hidden]="!btnThree">
             <div class="container py-3">
                 <div class="row">
-
+                    <div class="col-12 text-center py-3" *ngIf="infoForm">
+                        <p class="text-justify">
+                            در صورتی که اطلاعات فرم مورد تایید شماست، اطلاعات زیر را تکمیل کنید 
+                            و روی دکمه ارجاع به ناظر کلیک کنید. 
+                            توجه کنید که در صورت ارجاع به ناظر دیگر امکان ویرایش فایل را نخواهید داشت.
+                        </p>
+                    </div>
+                    <div class="col-12">
+                        <dx-form id="form"
+                            [formData]="infoForm"
+                            [items]="formItem"
+                            labelMode="floating"
+                            [rtlEnabled]="true"
+                            [colCountByScreen]="colCountByScreen"
+                        >
+                        </dx-form>
+                    </div>
+                    <div class="col-12 text-center py-3">
+                        <dx-button class="next-btn mx-1" stylingMode="conatined" type="success" text="ارجاع به ناظر" icon="check"
+                          [rtlEnabled]="true" (onClick)="submitThree()" [disabled]="!nextBtn">
+          
+                        </dx-button>
+                        <dx-button class="reset-btn mc-1" stylingMode="outlined" type="danger" text="بازگشت" icon="back"
+                          [rtlEnabled]="true" (onClick)="returnTwo()">
+                        </dx-button>
+                    </div>                    
                 </div>
             </div>
         </section>
         <section class="step-box step-four" [hidden]="!btnFour">
-            <div class="container py-3">
+            <div class="container-fluid py-3">
                 <div class="row">
-
+                    <div class="col-12 text-center" *ngIf="infoForm">
+                        <p class="text-justify">
+                            فرم مورد نظر شما الصاق گردید و در انتظار تایید ناظر قرار دارد
+                        </p>
+                        <div class="col-12 text-center py-3">
+                            <dx-button class="reset-btn mc-1" stylingMode="outlined" type="danger" text="بستن صفحه" icon="back"
+                              [rtlEnabled]="true" (onClick)="returnThree()">
+                            </dx-button>
+                        </div> 
+                    </div>
                 </div>
             </div>
         </section>
