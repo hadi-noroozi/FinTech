@@ -23,6 +23,9 @@ export class AddtransactionComponent implements OnInit {
   dataSource: FormList[];
 
   popupVisible = false;
+  popupVisible2 = false;
+  popup2Title: String;
+  popup2Content: String;
 
   longtabs: Longtab[];
   selectedIndex: number = 0;
@@ -155,6 +158,21 @@ export class AddtransactionComponent implements OnInit {
           text: "ناظر",
         }
       },
+      {
+        dataField: 'description',
+        editorType: 'dxTextArea',
+        editorOptions: {
+          height: 90,
+          maxLength: 200,
+          placeholder:"توضیحات پیوست را وارد کنید",
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,description: data.value};
+          },
+        },
+        label: {
+          text: "توضیحات",
+        }
+      },      
     ]
   }
 
@@ -162,7 +180,7 @@ export class AddtransactionComponent implements OnInit {
   }
 
   buttonsValidatior(rowData) {
-    const result = rowData.status ? rowData.id : 0;
+    const result = [rowData.id,rowData.status];
     return result;
   }
 
@@ -210,7 +228,8 @@ export class AddtransactionComponent implements OnInit {
         creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
         lastEditDate: new Date(event.target.files[0].lastModified).toLocaleDateString('fa-IR'),
         editor: this.user,
-        status: true,
+        status: 'در انتظار تایید',
+        comment: null
       }
 
       //console.log(this.infoForm);
@@ -275,5 +294,16 @@ export class AddtransactionComponent implements OnInit {
     this.longtabs[2].disabled = true;
     this.longtabs[3].disabled = true;
   }  
+
+  showDescription(id) {
+    this.popup2Title = "توضیحات " + this.dataSource.filter(item => item.id == id )[0].title;
+    this.popup2Content = this.dataSource.filter(item => item.id == id )[0].description;
+    this.popupVisible2 = true;
+  }
+  showComment(id) {
+    this.popup2Title = "نظر ناظر | " + this.dataSource.filter(item => item.id == id )[0].title;
+    this.popup2Content = this.dataSource.filter(item => item.id == id )[0].comment;
+    this.popupVisible2 = true;
+  }
 }
 

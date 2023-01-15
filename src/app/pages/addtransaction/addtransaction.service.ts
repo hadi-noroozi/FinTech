@@ -8,7 +8,9 @@ export class FormList {
   editor: String;
   lastEditDate: Date;
   validator: String;
-  status: Boolean;
+  status: String;
+  description: String;
+  comment: String;
 }
 
 const formList: FormList[] = [
@@ -20,7 +22,9 @@ const formList: FormList[] = [
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/10/20"),
     validator: "نسترن کلاهچی",
-    status: true
+    status: "در انتظار تایید",
+    description: "توضیحات یک",
+    comment: "نظر یک"
   }, {
     id: '154641',
     title: 'فرم سود و زیان 2',
@@ -29,7 +33,9 @@ const formList: FormList[] = [
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/10/01"),
     validator: "نسترن کلاهچی",
-    status: false
+    status: "در انتظار ویرایش",
+    description: "توضیحات دو",
+    comment: "نظر دو"
   },
   {
     id: '544211',
@@ -39,7 +45,9 @@ const formList: FormList[] = [
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/09/21"),
     validator: "نسترن کلاهچی",
-    status: true
+    status: "تایید شده",
+    description: "توضیحات سه",
+    comment: "نظر سه"
   }, {
     id: '154641',
     title: 'فرم سود و زیان 4',
@@ -48,7 +56,9 @@ const formList: FormList[] = [
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/08/30"),
     validator: "نسترن کلاهچی",
-    status: true
+    status: "تایید شده",
+    description: "توضیحات چهار",
+    comment: "نظر چهار"
   },
 ]
 

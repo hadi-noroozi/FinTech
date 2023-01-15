@@ -13,6 +13,7 @@ import {
   DxScrollViewModule,
   DxTemplateModule,
   DxTabsModule,
+  DxTextAreaModule,
   DxSelectBoxModule,
   DxCheckBoxModule,
   DxNumberBoxModule,
@@ -84,6 +85,7 @@ const routes: Routes = [
     DxCheckBoxModule,
     DxNumberBoxModule,
     DxFormModule,
+    DxTextAreaModule,
     DxToastModule
     ],
   providers: [AuthGuardService],

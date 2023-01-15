@@ -39,11 +39,11 @@
                             </dxi-column>
                             <dxi-column caption="دسته بندی" dataField="category" dataType="string">
                             </dxi-column>
-                            <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd'>
+                            <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100">
                             </dxi-column>                               
                             <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string">
                             </dxi-column>
-                            <dxi-column caption="تاریخ آخرین ویرایش" dataField="lastEditDate" dataType="date" format='yyyy/MM/dd'>
+                            <dxi-column caption="تاریخ آخرین ویرایش" dataField="lastEditDate" dataType="date" format='yyyy/MM/dd' width="135">
                             </dxi-column>    
                             <dxi-column caption="ناظر" dataField="validator" dataType="string">
                             </dxi-column>                                                     
@@ -51,34 +51,51 @@
                             <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior"></dxi-column>
 
                             <div *dxTemplate="let d of 'diffCellTemplate'">
-                                <div class="item" *ngIf="d.value == true">
-                                    <i class="dx-icon-check text-success font-weight-bold" style="font-size:medium"></i>
+                                <div class="item" *ngIf="d.value == 'در انتظار تایید'">
+                                    <span class="badge alert-primary">{{d.value}}</span>
                                 </div>
-                                <div class="item" *ngIf="d.value == false">
-                                    <i class="dx-icon-close text-danger font-weight-bold" style="font-size:medium"></i>
+                                <div class="item" *ngIf="d.value == 'در انتظار ویرایش'">
+                                    <span class="badge alert-danger">{{d.value}}</span>
+                                </div>
+                                <div class="item" *ngIf="d.value == 'تایید شده'">
+                                    <span class="badge alert-success">{{d.value}}</span>
                                 </div>
                             </div>
 
                             <div *dxTemplate="let d of 'diffCellTemplate2'">
-                                <div class="item" *ngIf="d.value"  >
+                                <div class="item">
+                                    <dx-button 
+                                        icon="info" 
+                                        stylingMode="text"
+                                        (onClick)="showDescription(d.value[0])" 
+                                        type="success"
+                                        id="description"
+                                        class="ml-1">
+                                    </dx-button>
+                                    <dx-button 
+                                        id="comment"
+                                        icon="comment" 
+                                        (onClick)="showComment(d.value[0])"
+                                        stylingMode="text" 
+                                        type="danger"
+                                        class="ml-1">
+                                    </dx-button>                                                                       
                                     <dx-button 
                                         icon="edit" 
                                         stylingMode="text" 
                                         type="default"
                                         class="ml-1"
-                                        [disabled] = "true"
-                                        [routerLink] = "['/edit', d.value]">
+                                        [disabled] = "d.value[1] != 'در انتظار ویرایش'"
+                                        [routerLink] = "['/edit', d.value[0]]">
                                     </dx-button>
                                     <dx-button 
                                         icon="fullscreen" 
                                         stylingMode="text" 
                                         type="normal"
                                         class="ml-1"
-                                        [disabled] = "true"
-                                        [routerLink] = "['/view', d.value]">
+                                        [routerLink] = "['/view', d.value[0]]">
                                     </dx-button>
                                 </div>
-
                             </div>
 
                             <dxo-load-panel [enabled]="true"></dxo-load-panel>
@@ -508,4 +525,25 @@
         </section>
     </dx-scroll-view>
   </div>
+</dx-popup>
+
+<dx-popup
+    [width]="350"
+    [height]="280"
+    [showTitle]="true"
+    [title]="popup2Title"
+    [dragEnabled]="false"
+    [showCloseButton]="true"
+    container=".dx-scrollview"
+    [rtlEnabled] = "true"
+    [(visible)]="popupVisible2"
+>
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+            <p class="text-right p-3">
+                {{popup2Content || 'نظری ثبت نشده است'}}
+            </p>
+        </dx-scroll-view>
+
+    </div>
 </dx-popup>
