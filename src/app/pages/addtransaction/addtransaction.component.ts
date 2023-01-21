@@ -69,6 +69,7 @@ export class AddtransactionComponent implements OnInit {
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
+          stylingMode: 'filled'
         },
         label: {
           text: "کد فرم",
@@ -79,6 +80,7 @@ export class AddtransactionComponent implements OnInit {
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
+          stylingMode: 'filled'
         },
         label: {
           text: "عنوان فرم",
@@ -89,6 +91,7 @@ export class AddtransactionComponent implements OnInit {
         editorType: "dxSelectBox",
         editorOptions: {
           dataSource: this.categories,
+          stylingMode: 'filled',
           placeholder:"نوع فرم را تعیین کنید",
           onValueChanged(data) {
             this.infoForm = {...this.infoForm ,catgory: data.value};
@@ -111,6 +114,7 @@ export class AddtransactionComponent implements OnInit {
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
+          stylingMode: 'filled',
         },
         label: {
           text: "تاریخ ایجاد",
@@ -121,6 +125,7 @@ export class AddtransactionComponent implements OnInit {
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
+          stylingMode: 'filled',
         },
         label: {
           text: "تاریخ آخرین ویرایش",
@@ -131,6 +136,7 @@ export class AddtransactionComponent implements OnInit {
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
+          stylingMode: 'filled',
         },
         label: {
           text: "ویرایش کننده",
@@ -142,6 +148,7 @@ export class AddtransactionComponent implements OnInit {
         editorOptions: {
           dataSource: this.validators,
           placeholder:"کاربر ناظر را تعیین کنید",
+          stylingMode: 'filled',
           onValueChanged(data) {
             this.infoForm = {...this.infoForm ,validator: data.value};
             // if(
@@ -165,6 +172,7 @@ export class AddtransactionComponent implements OnInit {
           height: 90,
           maxLength: 200,
           placeholder:"توضیحات پیوست را وارد کنید",
+          stylingMode: 'filled',
           onValueChanged(data) {
             this.infoForm = {...this.infoForm ,description: data.value};
           },
@@ -189,9 +197,7 @@ export class AddtransactionComponent implements OnInit {
   }
 
   uploadListener(event) {
-    /* wire up file reader */
     const target: DataTransfer = <DataTransfer>(event.target);
-    
     if (target.files.length !== 1) {
       throw new Error('Cannot use multiple files');
     }
@@ -205,26 +211,51 @@ export class AddtransactionComponent implements OnInit {
       /* selected the first sheet */
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      const { 
+        A1, 
+        A2, 
+        A3,
+        A22,
+        A28,
+        A32,
+        A41,
+        A43,
+        A44,
+        A47,
+        A50,
+        A57,
+        A62,
+        A63,
+        A64,
+        A65, 
+        ...wd }  = ws;
 
-      /* save data */
-      const data = XLSX.utils.sheet_to_json(ws); // to get 2d array pass 2nd parameter as object {header: 1}
-      data.map(x => {
-        x['PERSON_ID'] = 
-          (x['PERSON_ID'].length == 8) ? '00' + x['PERSON_ID'] :
-          (x['PERSON_ID'].length == 9) ? "0" + x['PERSON_ID'] : 
-          x['PERSON_ID'];
-      });
+      wd['!ref']="B2:E85";
+      delete ws.C86;
+      // delete 
+      //   ws.A1,
+      //   ws.A2,
+      //   ws.A3,
+      //   ws.A22,
+      //   ws.A28,
+      //   ws.A32,
+      //   ws.A44,
+      //   ws.A47,
+      //   ws.A50,
+      //   ws.A57,
+      //   ws.A62,
+      //   ws.A63,
+      //   ws.A64,
+      //   ws.A65;
 
-      for (const [key, value] of Object.entries(data[0])) {
-        this.arrayKey.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
-      }
+      const data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
 
       this.records = data;
       this.headRecords = this.records.slice(0,5);
 
       this.infoForm = {
-        id: event.target.files[0].name.split('-')[1].split('.')[0],
-        title: event.target.files[0].name.split('-')[0],
+        id: Math.floor(Math.random() * 10000000000) + 1,
+        title: ws.A1.h,
         creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
         lastEditDate: new Date(event.target.files[0].lastModified).toLocaleDateString('fa-IR'),
         editor: this.user,
@@ -232,10 +263,66 @@ export class AddtransactionComponent implements OnInit {
         comment: null
       }
 
-      //console.log(this.infoForm);
-      //console.log(this.arrayKey)
-      //console.log(data); // Data will be logged in array format containing objects
-    };
+      // this.infoForm = {
+      //   id: event.target.files[0].name.split('-')[1].split('.')[0],
+      //   title: event.target.files[0].name.split('-')[0],
+      //   creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
+      //   lastEditDate: new Date(event.target.files[0].lastModified).toLocaleDateString('fa-IR'),
+      //   editor: this.user,
+      //   status: 'در انتظار تایید',
+      //   comment: null
+      // }
+
+      console.log(ws);
+    }
+
+    /* wire up file reader */
+    // const target: DataTransfer = <DataTransfer>(event.target);
+    
+    // if (target.files.length !== 1) {
+    //   throw new Error('Cannot use multiple files');
+    // }
+    // const reader: FileReader = new FileReader();
+    // reader.readAsBinaryString(target.files[0]);
+    // reader.onload = (e: any) => {
+    //   /* create workbook */
+    //   const binarystr: string = e.target.result;
+    //   const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
+
+    //   /* selected the first sheet */
+    //   const wsname: string = wb.SheetNames[0];
+    //   const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+    //   /* save data */
+    //   const data = XLSX.utils.sheet_to_json(ws); // to get 2d array pass 2nd parameter as object {header: 1}
+    //   data.map(x => {
+    //     x['PERSON_ID'] = 
+    //       (x['PERSON_ID'].length == 8) ? '00' + x['PERSON_ID'] :
+    //       (x['PERSON_ID'].length == 9) ? "0" + x['PERSON_ID'] : 
+    //       x['PERSON_ID'];
+    //   });
+
+    //   for (const [key, value] of Object.entries(data[0])) {
+    //     this.arrayKey.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
+    //   }
+
+    //   this.records = data;
+    //   this.headRecords = this.records.slice(0,5);
+
+    //   this.infoForm = {
+    //     id: event.target.files[0].name.split('-')[1].split('.')[0],
+    //     title: event.target.files[0].name.split('-')[0],
+    //     creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
+    //     lastEditDate: new Date(event.target.files[0].lastModified).toLocaleDateString('fa-IR'),
+    //     editor: this.user,
+    //     status: 'در انتظار تایید',
+    //     comment: null
+    //   }
+
+    //   //console.log(this.infoForm);
+    //   //console.log(this.arrayKey)
+    //   //console.log(data); // Data will be logged in array format containing objects
+    // };
   }
 
   fileReset() {

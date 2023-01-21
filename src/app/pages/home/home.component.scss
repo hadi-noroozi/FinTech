@@ -32,3 +32,16 @@
     }
   }
 }
+
+.content-block {
+  font-size: 1rem !important;
+}
+
+
+::ng-deep .dx-card {
+  box-shadow: none;
+}
+
+::ng-deep * {
+  font-family: iranyekan;
+}

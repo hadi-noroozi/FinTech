@@ -3,8 +3,8 @@
 
 .login-form {
   .link {
-    text-align: center;
-    font-size: 16px;
+    text-align: right;
+    font-size: 14px;
     font-style: normal;
 
     a {
@@ -15,5 +15,48 @@
   ::ng-deep .form-text {
     margin: 10px 0;
     color: rgba($base-text-color, alpha($base-text-color) * 0.7);
+    font-family: 'iranyekan';
+    text-align: right;
   }
+}
+
+::ng-deep .dx-widget input, ::ng-deep  .dx-widget  {
+  font-family: iranyekan;
+}
+
+::ng-deep .dx-checkbox {
+  display: block;
+  margin: 6px 0!important;
+}
+
+.login-title {
+  font-family: 'iranyekan';
+  font-size: 16px;
+}
+
+::ng-deep .dx-invalid-message-content {
+  font-family: 'iranyekan' !important;
+}
+
+::ng-deep .dx-textbox {
+  margin-bottom: 0px;
+}
+
+@media screen and (max-width: 768px) {
+  ::ng-deep .dx-textbox {
+    margin-bottom: 16px;
+  }
+
+  ::ng-deep .dx-checkbox {
+    display: block;
+    margin: 6px 0 !important;
+  }
+  
+  ::ng-deep .dx-layout-manager .dx-field-item{
+    padding-bottom: 10px;
+  }
+}
+
+::ng-deep .dx-layout-manager .dx-field-item{
+  padding-bottom: 0;
 }

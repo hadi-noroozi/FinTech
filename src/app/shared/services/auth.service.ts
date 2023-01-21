@@ -25,7 +25,7 @@ export class AuthService {
 
     try {
       // Send request
-      console.log(email, password);
+      // console.log(email, password);
       this._user = { ...defaultUser, email };
       this.router.navigate([this._lastAuthenticatedPath]);
 

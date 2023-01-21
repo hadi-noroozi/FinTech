@@ -1,111 +1,109 @@
-<h2 class="content-block iranyekan text-right">پرتال ترازنامه مالی</h2>
-<div class="content-block">
-    <div class="dx-card">
-        <!--The content below is only a placeholder and can be replaced.-->
-        <section class="estelam">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12 text-center d-flex justify-content-end py-3">
-                        <dx-button 
-                            class="iranyekan" 
-                            stylingMode="contained" 
-                            type="default" 
-                            text="الصاق فرم" 
-                            icon="add"
-                            (onClick)="showInfo()"
-                            [rtlEnabled]="true">
-                        </dx-button>
-                    </div>
-                    <div class="col-12 iranyekan px-0">
-                        <dx-data-grid 
-                            id="gridContainer" 
-                            [dataSource]="dataSource" 
-                            keyExpr="id"
-                            [hoverStateEnabled]="true"
-                            [rowAlternationEnabled]="true"
-                            [showColumnLines]="false"
-                            [showRowLines]="false"
-                            [autoNavigateToFocusedRow]="true"
-                            [allowColumnReordering]="true"
-                            [allowColumnResizing]="true"
-                            [columnAutoWidth]="true"
-                            [showBorders]="false"
-                            [remoteOperations]="true" 
-                            [rtlEnabled]="true">
+<h2 class="content-block iranyekan text-right">سامانه جامع مالی</h2>
+<div class="content-block dx-card wide-card">
+    <!--The content below is only a placeholder and can be replaced.-->
+    <section class="estelam">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center d-flex justify-content-end p-0 btn-box">
+                    <dx-button 
+                        class="iranyekan" 
+                        stylingMode="contained" 
+                        type="default" 
+                        text="الصاق فرم" 
+                        icon="add"
+                        (onClick)="showInfo()"
+                        [rtlEnabled]="true">
+                    </dx-button>
+                </div>
+                <div class="col-12 iranyekan px-0">
+                    <dx-data-grid 
+                        id="gridContainer" 
+                        [dataSource]="dataSource" 
+                        keyExpr="id"
+                        [hoverStateEnabled]="true"
+                        [rowAlternationEnabled]="true"
+                        [showColumnLines]="false"
+                        [showRowLines]="false"
+                        [autoNavigateToFocusedRow]="true"
+                        [allowColumnReordering]="true"
+                        [allowColumnResizing]="true"
+                        [columnAutoWidth]="true"
+                        [showBorders]="false"
+                        [remoteOperations]="true" 
+                        [rtlEnabled]="true">
 
-                            <dxi-column caption="#" dataField="id" dataType="number">
-                            </dxi-column>
-                            <dxi-column caption="عنوان فرم" dataField="title" dataType="string">
-                            </dxi-column>
-                            <dxi-column caption="دسته بندی" dataField="category" dataType="string">
-                            </dxi-column>
-                            <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100">
-                            </dxi-column>                               
-                            <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string">
-                            </dxi-column>
-                            <dxi-column caption="تاریخ آخرین ویرایش" dataField="lastEditDate" dataType="date" format='yyyy/MM/dd' width="135">
-                            </dxi-column>    
-                            <dxi-column caption="ناظر" dataField="validator" dataType="string">
-                            </dxi-column>                                                     
-                            <dxi-column caption="وضعیت" dataField="status" cellTemplate="diffCellTemplate" ></dxi-column>
-                            <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior"></dxi-column>
+                        <dxi-column caption="#" dataField="id" dataType="number">
+                        </dxi-column>
+                        <dxi-column caption="عنوان فرم" dataField="title" dataType="string">
+                        </dxi-column>
+                        <dxi-column caption="دسته بندی" dataField="category" dataType="string">
+                        </dxi-column>
+                        <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string">
+                        </dxi-column>                        
+                        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100">
+                        </dxi-column>                               
+                        <dxi-column caption="تاریخ آخرین ویرایش" dataField="lastEditDate" dataType="date" format='yyyy/MM/dd' width="135">
+                        </dxi-column>    
+                        <dxi-column caption="ناظر" dataField="validator" dataType="string">
+                        </dxi-column>                                                     
+                        <dxi-column caption="وضعیت" dataField="status" cellTemplate="diffCellTemplate" ></dxi-column>
+                        <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior"></dxi-column>
 
-                            <div *dxTemplate="let d of 'diffCellTemplate'">
-                                <div class="item" *ngIf="d.value == 'در انتظار تایید'">
-                                    <span class="badge alert-primary">{{d.value}}</span>
-                                </div>
-                                <div class="item" *ngIf="d.value == 'در انتظار ویرایش'">
-                                    <span class="badge alert-danger">{{d.value}}</span>
-                                </div>
-                                <div class="item" *ngIf="d.value == 'تایید شده'">
-                                    <span class="badge alert-success">{{d.value}}</span>
-                                </div>
+                        <div *dxTemplate="let d of 'diffCellTemplate'">
+                            <div class="item" *ngIf="d.value == 'در انتظار تایید'">
+                                <span class="badge alert-primary">{{d.value}}</span>
                             </div>
-
-                            <div *dxTemplate="let d of 'diffCellTemplate2'">
-                                <div class="item">
-                                    <dx-button 
-                                        icon="info" 
-                                        stylingMode="text"
-                                        (onClick)="showDescription(d.value[0])" 
-                                        type="success"
-                                        id="description"
-                                        class="ml-1">
-                                    </dx-button>
-                                    <dx-button 
-                                        id="comment"
-                                        icon="comment" 
-                                        (onClick)="showComment(d.value[0])"
-                                        stylingMode="text" 
-                                        type="danger"
-                                        class="ml-1">
-                                    </dx-button>                                                                       
-                                    <dx-button 
-                                        icon="edit" 
-                                        stylingMode="text" 
-                                        type="default"
-                                        class="ml-1"
-                                        [disabled] = "d.value[1] != 'در انتظار ویرایش'"
-                                        [routerLink] = "['/edit', d.value[0]]">
-                                    </dx-button>
-                                    <dx-button 
-                                        icon="fullscreen" 
-                                        stylingMode="text" 
-                                        type="normal"
-                                        class="ml-1"
-                                        [routerLink] = "['/view', d.value[0]]">
-                                    </dx-button>
-                                </div>
+                            <div class="item" *ngIf="d.value == 'در انتظار ویرایش'">
+                                <span class="badge alert-danger">{{d.value}}</span>
                             </div>
+                            <div class="item" *ngIf="d.value == 'تایید شده'">
+                                <span class="badge alert-success">{{d.value}}</span>
+                            </div>
+                        </div>
 
-                            <dxo-load-panel [enabled]="true"></dxo-load-panel>
-                            <dxo-paging [pageSize]="50"></dxo-paging>
-                        </dx-data-grid>
-                    </div>
+                        <div *dxTemplate="let d of 'diffCellTemplate2'">
+                            <div class="item">
+                                <dx-button 
+                                    icon="info" 
+                                    stylingMode="text"
+                                    (onClick)="showDescription(d.value[0])" 
+                                    type="success"
+                                    id="description"
+                                    class="ml-1">
+                                </dx-button>
+                                <dx-button 
+                                    id="comment"
+                                    icon="comment" 
+                                    (onClick)="showComment(d.value[0])"
+                                    stylingMode="text" 
+                                    type="danger"
+                                    class="ml-1">
+                                </dx-button>                                                                       
+                                <dx-button 
+                                    icon="edit" 
+                                    stylingMode="text" 
+                                    type="default"
+                                    class="ml-1"
+                                    [disabled] = "d.value[1] != 'در انتظار ویرایش'"
+                                    [routerLink] = "['/edit', d.value[0]]">
+                                </dx-button>
+                                <dx-button 
+                                    icon="fullscreen" 
+                                    stylingMode="text" 
+                                    type="normal"
+                                    class="ml-1"
+                                    [routerLink] = "['/view', d.value[0]]">
+                                </dx-button>
+                            </div>
+                        </div>
+
+                        <dxo-load-panel [enabled]="true"></dxo-load-panel>
+                        <dxo-paging [pageSize]="50"></dxo-paging>
+                    </dx-data-grid>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 </div>
 
 <dx-popup 

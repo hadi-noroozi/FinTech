@@ -1,36 +1,35 @@
-<h2 class="content-block">Tasks</h2>
+<h2 class="content-block iranyekan text-right">مدیریت فرم ها</h2>
 
 <dx-data-grid class="dx-card wide-card"
   [dataSource]="dataSource"
   [showBorders]="false"
-  [focusedRowEnabled]="true"
-  [focusedRowIndex]="0"
+  [focusedRowEnabled]="false"
   [columnAutoWidth]="true"
-  [columnHidingEnabled]="true">
+  [columnHidingEnabled]="true"
+  [rtlEnabled]="true"
+  height="79vh"
+  [hoverStateEnabled]="true"
+  [rowAlternationEnabled]="true">
 
-  <dxo-paging [pageSize]="10"></dxo-paging>
-  <dxo-pager [showPageSizeSelector]="true" [showInfo]="true"></dxo-pager>
-  <dxo-filter-row [visible]="true"></dxo-filter-row>
+  <dxo-load-panel [enabled]="true"></dxo-load-panel>
+  <dxo-scrolling mode="infinite"></dxo-scrolling>
+  <dxo-filter-row [visible]="false"></dxo-filter-row>
 
   <dxi-column
     dataField="Task_ID"
-    [width]="90"
+    caption="#"
+    [width]="80"
     [hidingPriority]="2">
   </dxi-column>
   <dxi-column
     dataField="Task_Subject"
     [width]="190"
-    caption="Subject"
+    caption="عنوان"
     [hidingPriority]="8">
   </dxi-column>
   <dxi-column
-    dataField="Task_Status"
-    caption="Status"
-    [hidingPriority]="6">
-  </dxi-column>
-  <dxi-column
     dataField="Task_Priority"
-    caption="Priority"
+    caption="دسته بندی"
     [hidingPriority]="5">
     <dxo-lookup
       [dataSource]="priority"
@@ -39,32 +38,71 @@
     </dxo-lookup>
   </dxi-column>
   <dxi-column
+    dataField="Task_Priority"
+    caption="اولویت"
+    name="Priority"
+    [hidingPriority]="1">
+  </dxi-column>  
+  <dxi-column
     dataField="ResponsibleEmployee.Employee_Full_Name"
-    caption="Assigned To"
+    caption="ویرایشگر"
     [allowSorting]="false"
     [hidingPriority]="7">
   </dxi-column>
   <dxi-column
     dataField="Task_Start_Date"
-    caption="Start Date"
+    caption="تاریخ ایجاد"
     dataType="date"
     [hidingPriority]="3">
   </dxi-column>
   <dxi-column
     dataField="Task_Due_Date"
-    caption="Due Date"
+    caption="تاریخ آخرین ویرایش"
     dataType="date"
     [hidingPriority]="4">
   </dxi-column>
   <dxi-column
-    dataField="Task_Priority"
-    caption="Priority"
-    name="Priority"
-    [hidingPriority]="1">
+    dataField="Task_Status"
+    caption="وضعیت"
+    [hidingPriority]="6">
   </dxi-column>
-  <dxi-column
-    dataField="Task_Completion"
-    caption="Completion"
-    [hidingPriority]="0">
-  </dxi-column>
+  <dxi-column caption="" cellTemplate="diffCellTemplate2" [hidingPriority]="0"></dxi-column>
+
+  <div *dxTemplate="let d of 'diffCellTemplate2'">
+    <div class="item">
+        <dx-button 
+            icon="check" 
+            stylingMode="text"
+            type="success"
+            id="accept"
+            class="ml-1">
+        </dx-button>
+        <dx-button 
+            id="reject"
+            icon="close" 
+            stylingMode="text" 
+            type="danger"
+            class="ml-1">
+        </dx-button>                                                                        
+        <dx-button 
+            icon="edit" 
+            stylingMode="text" 
+            type="default"
+            class="ml-1">
+        </dx-button>
+        <dx-button 
+            icon="info" 
+            stylingMode="text"
+            type="normal"
+            id="description"
+            class="ml-1">
+        </dx-button> 
+        <dx-button 
+            icon="fullscreen" 
+            stylingMode="text" 
+            type="normal"
+            class="ml-1">
+        </dx-button>
+    </div>
+</div>
 </dx-data-grid>

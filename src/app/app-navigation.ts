@@ -1,11 +1,11 @@
 export const navigation = [
   {
-    text: 'پرتال ترازنامه مالی',
+    text: 'سامانه جامع مالی',
     path: '/home',
     icon: 'home'
   },
   {
-    text: 'ابزار',
+    text: 'امکانات',
     icon: 'folder',
     items: [
       {
@@ -13,7 +13,7 @@ export const navigation = [
         path: '/profile'
       },
       {
-        text: 'مدیریت وظایف',
+        text: 'مدیریت فرم ها',
         path: '/tasks'
       }
     ]

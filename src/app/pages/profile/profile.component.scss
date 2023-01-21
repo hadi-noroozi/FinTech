@@ -1,18 +1,41 @@
 .form-avatar {
-  float: left;
-  height: 120px;
-  width: 120px;
-  margin-right: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  float: right;
+  height: 80px;
+  width: 80px;
+  margin-left: 20px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   background-color: #fff;
   overflow: hidden;
+  border-radius: 50%;
 
   img {
-    height: 120px;
+    height: 80px;
     display: block;
     margin: 0 auto;
   }
+}
+
+.user-info {
+  align-items: center;
+  vertical-align: middle;
+  font-family: 'iranyekan';
+}
+
+::ng-deep .dx-field-item-label.dx-field-item-label-location-top {
+  text-align: right !important;
+  font-family: 'iranyekan';
+}
+
+::ng-deep .dx-card {
+  box-shadow: none;
+}
+
+::ng-deep input {
+  font-family: 'iranyekan' !important;
+}
+
+.content-block {
+  font-size: 1rem !important;
 }
