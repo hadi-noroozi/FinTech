@@ -44,7 +44,7 @@ export class ProfileComponent {
           stylingMode: 'filled'
         },
         label: {
-          text: "نام کاربر",
+          text: "نام",
         }
       },
       {

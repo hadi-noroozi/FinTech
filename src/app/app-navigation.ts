@@ -5,18 +5,14 @@ export const navigation = [
     icon: 'home'
   },
   {
-    text: 'امکانات',
-    icon: 'folder',
-    items: [
-      {
-        text: 'حساب کاربری',
-        path: '/profile'
-      },
-      {
-        text: 'مدیریت فرم ها',
-        path: '/tasks'
-      }
-    ]
+    text: 'فهرست فرم ها',
+    icon: 'bulletlist',
+    path: '/tasks'
+  },
+  {
+    text: 'حساب کاربری',
+    icon: 'user',
+    path: '/profile'
   },
   {
     text: 'الصاق فرم',

@@ -18,7 +18,9 @@ import {
   DxCheckBoxModule,
   DxNumberBoxModule,
   DxFormModule,
-  DxToastModule
+  DxToastModule,
+  DxSwitchModule,
+  DxTextBoxModule
 } from 'devextreme-angular';
 import { AddtransactionComponent } from './pages/addtransaction/addtransaction.component';
 import { GridCellDataPipe } from './grid-cell-data.pipe';
@@ -86,7 +88,9 @@ const routes: Routes = [
     DxNumberBoxModule,
     DxFormModule,
     DxTextAreaModule,
-    DxToastModule
+    DxTextBoxModule,
+    DxToastModule,
+    DxSwitchModule
     ],
   providers: [AuthGuardService],
   exports: [RouterModule],

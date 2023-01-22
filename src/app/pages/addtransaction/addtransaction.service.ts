@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 export class FormList {
   id: String;
+  correctiveCode?: String;
   title: String;
   category: String;
   creatingDate: Date;
@@ -15,48 +16,48 @@ export class FormList {
 
 const formList: FormList[] = [
   {
-    id: '122342',
-    title: 'فرم سود و زیان 1',
-    category: "مالی",
+    id: '1223421456',
+    title: 'خسارت معوقه قبولی اصلاحی سال 1401',
+    category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/09/30"),
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/10/20"),
     validator: "نسترن کلاهچی",
-    status: "در انتظار تایید",
+    status: "مشاهده نشده",
     description: "توضیحات یک",
     comment: "نظر یک"
   }, {
-    id: '154641',
-    title: 'فرم سود و زیان 2',
-    category: "مالی",
+    id: '1546411456',
+    title: 'خسارت معوقه قبولی اصلاحی سال 1400',
+    category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/09/25"),
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/10/01"),
     validator: "نسترن کلاهچی",
-    status: "در انتظار ویرایش",
+    status: "مشاهده شده",
     description: "توضیحات دو",
     comment: "نظر دو"
-  },
-  {
-    id: '544211',
-    title: 'فرم سود و زیان 3',
-    category: "مالی",
+  }, {
+    id: '5442111456',
+    correctiveCode: '1546411456',
+    title: 'خسارت معوقه قبولی اصلاحی سال 1399 -اصلاحیه',
+    category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/08/30"),
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/09/21"),
     validator: "نسترن کلاهچی",
-    status: "تایید شده",
+    status: "مشاهده شده",
     description: "توضیحات سه",
     comment: "نظر سه"
   }, {
-    id: '154641',
-    title: 'فرم سود و زیان 4',
-    category: "مالی",
+    id: '1546411456',
+    title: 'خسارت معوقه قبولی اصلاحی سال 1400',
+    category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/07/30"),
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/08/30"),
     validator: "نسترن کلاهچی",
-    status: "تایید شده",
+    status: "مشاهده شده",
     description: "توضیحات چهار",
     comment: "نظر چهار"
   },

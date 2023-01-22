@@ -2,9 +2,9 @@
 <div class="content-block dx-card wide-card">
     <!--The content below is only a placeholder and can be replaced.-->
     <section class="estelam">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 text-center d-flex justify-content-end p-0 btn-box">
+        <div class="container-fluid pb-3">
+            <div class="row" dir="rtl">
+                <div class="col-12 text-center d-flex p-0 btn-box">
                     <dx-button 
                         class="iranyekan" 
                         stylingMode="contained" 
@@ -14,13 +14,23 @@
                         (onClick)="showInfo()"
                         [rtlEnabled]="true">
                     </dx-button>
+                    <div class="dx-field mr-auto">
+                        <div class="dx-field-label">نوع فرم (فقط 1 و2)</div>
+                        <div class="dx-field-value text-center">
+                          <dx-text-box stylingMode="filled" [(value)]="user.categoryCode"></dx-text-box>
+                        </div>
+                    </div>
                 </div>
+
+
                 <div class="col-12 iranyekan px-0">
                     <dx-data-grid 
                         id="gridContainer" 
+                        height="71vh"
                         [dataSource]="dataSource" 
                         keyExpr="id"
                         [hoverStateEnabled]="true"
+                        [columnHidingEnabled]="true"
                         [rowAlternationEnabled]="true"
                         [showColumnLines]="false"
                         [showRowLines]="false"
@@ -32,32 +42,27 @@
                         [remoteOperations]="true" 
                         [rtlEnabled]="true">
 
-                        <dxi-column caption="#" dataField="id" dataType="number">
+                        <dxi-column caption=" " dataField="status" width="40" cellTemplate="diffCellTemplate" ></dxi-column>
+                        <dxi-column caption="#" dataField="id" dataType="string" [hidingPriority]="0">
                         </dxi-column>
-                        <dxi-column caption="عنوان فرم" dataField="title" dataType="string">
+                        <dxi-column caption="عنوان فرم" dataField="title" dataType="string" [hidingPriority]="8">
                         </dxi-column>
-                        <dxi-column caption="دسته بندی" dataField="category" dataType="string">
+                        <dxi-column caption="دسته بندی" dataField="category" dataType="string" [hidingPriority]="6">
                         </dxi-column>
-                        <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string">
+                        <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string" [hidingPriority]="1">
                         </dxi-column>                        
-                        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100">
-                        </dxi-column>                               
-                        <dxi-column caption="تاریخ آخرین ویرایش" dataField="lastEditDate" dataType="date" format='yyyy/MM/dd' width="135">
-                        </dxi-column>    
-                        <dxi-column caption="ناظر" dataField="validator" dataType="string">
-                        </dxi-column>                                                     
-                        <dxi-column caption="وضعیت" dataField="status" cellTemplate="diffCellTemplate" ></dxi-column>
-                        <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior"></dxi-column>
+                        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100" [hidingPriority]="5">
+                        </dxi-column>                                  
+                        <dxi-column caption="ناظر" dataField="validator" dataType="string" [hidingPriority]="3">
+                        </dxi-column>     
+                        <dxi-column caption="پیوست به" dataField="correctiveCode" dataType="string" [hidingPriority]="4">
+                        </dxi-column>                                                
+
+                        <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior" [hidingPriority]="2"></dxi-column>
 
                         <div *dxTemplate="let d of 'diffCellTemplate'">
-                            <div class="item" *ngIf="d.value == 'در انتظار تایید'">
-                                <span class="badge alert-primary">{{d.value}}</span>
-                            </div>
-                            <div class="item" *ngIf="d.value == 'در انتظار ویرایش'">
-                                <span class="badge alert-danger">{{d.value}}</span>
-                            </div>
-                            <div class="item" *ngIf="d.value == 'تایید شده'">
-                                <span class="badge alert-success">{{d.value}}</span>
+                            <div class="item" *ngIf="d.value == 'مشاهده نشده'">
+                                <span class="spinner-grow spinner-grow-sm text-danger" placement="top" [title]="d.value"></span>
                             </div>
                         </div>
 
@@ -75,18 +80,19 @@
                                     id="comment"
                                     icon="comment" 
                                     (onClick)="showComment(d.value[0])"
+                                    [disabled] = "d.value[1] != 'مشاهده شده'"
                                     stylingMode="text" 
                                     type="danger"
                                     class="ml-1">
-                                </dx-button>                                                                       
+                                </dx-button>    
                                 <dx-button 
-                                    icon="edit" 
+                                    icon="upload" 
+                                    [disabled] = "d.value[1] != 'مشاهده شده'"
                                     stylingMode="text" 
                                     type="default"
                                     class="ml-1"
-                                    [disabled] = "d.value[1] != 'در انتظار ویرایش'"
-                                    [routerLink] = "['/edit', d.value[0]]">
-                                </dx-button>
+                                    (onClick)="showInfo(d.value[0])">
+                                </dx-button>                                                                   
                                 <dx-button 
                                     icon="fullscreen" 
                                     stylingMode="text" 
@@ -109,7 +115,7 @@
 <dx-popup 
     width="90%" [height]="600" 
     [(visible)]="popupVisible" [showTitle]="false" 
-    [closeOnOutsideClick]="true" [rtlEnabled]="true">
+    [closeOnOutsideClick]="!records.length" [rtlEnabled]="true">
   <div *dxTemplate="let data of 'content'">
     <dx-scroll-view width="100%" height="100%">
         <div id="longtabs">
@@ -120,7 +126,13 @@
         <section class="step-box step-one" [hidden]="!btnOne">
             <div class="container-fluid py-3">
                 <div class="row">
-                    <div class="col-12 text-center" *ngIf="records.length == 0">
+                    <div class="col-12 text-right px-3 " [hidden]="!correctiveId">
+                        <p class="pb-0 mb-0">
+                            نسخه اصلاحیه
+                            پیوست به فرم {{correctiveId}}
+                        <p>
+                    </div>
+                    <div class="col-12 text-center" [hidden]="!(records.length == 0)">
                         <p class="text-right px-3 pt-3">لطفا داده های مربوطه را بارگذاری نمایید.</p>
                         <input 
                             type="file" #csvReader 
@@ -134,16 +146,17 @@
                           </dx-button>
                         </label>
                     </div>
-                    <div class="col-12 text-center px-0" *ngIf="records.length > 0">
-                        <div class="table-responsive w-100 mx-auto ">
+                    <div class="col-12 text-center px-0" [hidden]="!(records.length > 0)">
+                        <div class="w-100 mx-auto ">
                           <p class="text-justify p-3">
                             پیش نمایش چندسطر اولیه داده ها را مشاهده و بررسی نمایید
-                            و در صورت صحت و درستی ساختار داده ها بر روی دکمه تایید و ادامه کلیک کنید.
+                            و در صورت صحت ساختار داده ها بر روی دکمه تایید و ادامه کلیک کنید.
                           </p>
 
                           <dx-data-grid 
                             id="gridContainer2" 
                             [dataSource]="headRecords" 
+                            [columnAutoWidth]="true"
                             [hoverStateEnabled]="true"
                             [rowAlternationEnabled]="true"
                             [showColumnLines]="false"
@@ -154,90 +167,38 @@
                             [columnAutoWidth]="true"
                             [showBorders]="false"
                             [rtlEnabled]="true"
-                            [columnAutoWidth]="true"
-                            [remoteOperations]="true">
-
-                            <!--
-                            <dxi-column 
-                                dataField="POLICY_NO"
-                                dataType="string"
-                                caption="شماره بیمه نامه">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="PERSON_ID"
-                                dataType="string"
-                                caption="شناسه بیمه گزار">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="PERSON_NAME"
-                                dataType="string"
-                                caption="عنوان بیمه گزار">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="FIELD_NAME"
-                                dataType="string"
-                                caption="رشته">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="SUBFIELD_NAME"
-                                dataType="string"
-                                caption="زیررشته">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="PORVINCE_NAME"
-                                dataType="string"
-                                caption="استان">
-                            </dxi-column>       
-                            <dxi-column 
-                                dataField="ISSUE_DATE"
-                                dataType="date"
-                                format='yyyy/MM/dd'
-                                caption="تاریخ صدور">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="START_DATE"
-                                dataType="date"
-                                format='yyyy/MM/dd'
-                                caption="تاریخ آغاز">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="END_DATE"
-                                dataType="date"
-                                format='yyyy/MM/dd'
-                                caption="تاریخ پایان">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="PREMIUM"
-                                dataType="string"
-                                caption="حق بیمه">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column>  
-                            <dxi-column 
-                                dataField="DUE_DEBT"
-                                dataType="string"
-                                caption="مطالبات سررسیدشده">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="NOT_DUE_DEBT"
-                                dataType="number"
-                                caption="مطالبات سررسیدنشده">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="DAMAGE"
-                                dataType="string"
-                                caption="خسارت">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="OVERDUE_DAMAGE"
-                                dataType="string"
-                                caption="خسارت معوق">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column>                                                                                                           
-                            -->
+                            [columnAutoWidth]="true">
                             
+                            <dxi-column
+                                *ngFor="let item of arrayKey"
+                                [dataField]="item.key" 
+                                [dataType]="item.type" 
+                                [caption]="
+                                    (item.key == 'field') ? 'رشته' :
+                                    (item.key == 'deferredLossOfCompanyShare') ? '100% خسارت معوق سهم شرکت ' :
+                                    (item.key == 'deferredDamagesShareOfInsurer') ? 'خسارت معوق سهم بیمه گران اتکایی' :  
+                                    (item.key == 'netBalanceOfCompanyShare') ? 'مانده خالص سهم شرکت' :
+                                    (item.key == 'currency') ? 'واحد ارز' :
+                                    
+                                    (item.key == 'maintenanceShare') ? 'سهم نگهداری ' :
+                                    (item.key == 'reinsuranceShare') ? 'سهم اتکایی' :  
+                                    (item.key == 'total') ? 'کل' : ''              
+                                ">
+                                <dxo-format 
+                                    type="fixedPoint" 
+                                    *ngIf="
+                                        (item.key == 'deferredLossOfCompanyShare') ||
+                                        (item.key == 'deferredDamagesShareOfInsurer') ||
+                                        (item.key == 'netBalanceOfCompanyShare') ||
+
+                                        (item.key == 'maintenanceShare') ||
+                                        (item.key == 'reinsuranceShare') ||
+                                        (item.key == 'total') 
+                                    ">
+                                </dxo-format>
+                            </dxi-column> 
+
+                            <!-- 
                             <dxi-column
                                 *ngFor="let item of arrayKey"
                                 [dataField]="item.key" 
@@ -275,15 +236,16 @@
                                         (item.key == 'OVERDUE_DAMAGE')
                                     ">
                                 </dxo-format>
-                            </dxi-column> 
+                            </dxi-column>  
+                            -->
                             
                             <dxo-load-panel [enabled]="true"></dxo-load-panel>
                             <dxo-scrolling mode="infinite"></dxo-scrolling>
                           </dx-data-grid>
           
                         </div>
-                      </div>
-                      <div class="col-12 text-center py-3" *ngIf="records.length > 0">
+                    </div>
+                    <div class="col-12 text-center py-3" [hidden]="!(records.length > 0)">
                         <dx-button class="next-btn mx-1" stylingMode="conatined" type="success" text="تایید و ادامه" icon="check"
                           [rtlEnabled]="rtlEnabled" (onClick)="submitOne()">
           
@@ -299,9 +261,10 @@
             <div class="container-fluid py-3">
                 <div class="row">
                     <div class="col-12 text-center px-0" *ngIf="records.length > 0">
-                        <div class="table-responsive w-100 mx-auto ">
+                        <div class="w-100 mx-auto ">
                           <p class="text-justify px-3 pt-2 mb-0">
-                            در صورت نیاز به ویرایش داده های موجود را ویرایش کنید.
+                            اطلاعات فرم را بررسی کنید در صورت درستی اطلاعات فرم روی دکمه تایید و ادامه کلیک کنید، 
+                            در غیر اینصورت روی بازگشت کلیک کنید و پس از اصلاح فرم آن را دوباره الصاق کنید.
                           </p>
                           <dx-data-grid 
                             id="gridContainer3" 
@@ -316,102 +279,39 @@
                             [columnAutoWidth]="true"
                             [showBorders]="false"
                             [rtlEnabled]="true"
-                            height="55vh"
+                            height="53vh"
                             [remoteOperations]="true">
 
+                            <dxi-column
+                                *ngFor="let item of arrayKey"
+                                [dataField]="item.key" 
+                                [dataType]="item.type" 
+                                [caption]="
+                                    (item.key == 'field') ? 'رشته' :
+                                    (item.key == 'deferredLossOfCompanyShare') ? '100% خسارت معوق سهم شرکت ' :
+                                    (item.key == 'deferredDamagesShareOfInsurer') ? 'خسارت معوق سهم بیمه گران اتکایی' :  
+                                    (item.key == 'netBalanceOfCompanyShare') ? 'مانده خالص سهم شرکت' :
+                                    (item.key == 'currency') ? 'واحد ارز' :
+                                                                        
+                                    (item.key == 'maintenanceShare') ? 'سهم نگهداری ' :
+                                    (item.key == 'reinsuranceShare') ? 'سهم اتکایی' :  
+                                    (item.key == 'total') ? 'کل' : ''               
+                                ">
+                                <dxo-format 
+                                    type="fixedPoint" 
+                                    *ngIf="
+                                        (item.key == 'deferredLossOfCompanyShare') ||
+                                        (item.key == 'deferredDamagesShareOfInsurer') ||
+                                        (item.key == 'netBalanceOfCompanyShare') ||
+
+                                        (item.key == 'maintenanceShare') ||
+                                        (item.key == 'reinsuranceShare') ||
+                                        (item.key == 'total') 
+                                    ">
+                                </dxo-format>
+                            </dxi-column> 
+
                             <!--
-                            <dxi-column 
-                                dataField="POLICY_NO"
-                                dataType="string"
-                                width="200"
-                                caption="شماره بیمه نامه">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="PERSON_ID"
-                                dataType="string"
-                                width="110"
-                                caption="شناسه بیمه گزار">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="PERSON_NAME"
-                                dataType="string"
-                                width="110"
-                                caption="عنوان بیمه گزار">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="FIELD_NAME"
-                                dataType="string"
-                                caption="رشته">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="SUBFIELD_NAME"
-                                dataType="string"
-                                caption="زیررشته">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="PORVINCE_NAME"
-                                dataType="string"
-                                width="140"
-                                caption="استان">
-                            </dxi-column>       
-                            <dxi-column 
-                                dataField="ISSUE_DATE"
-                                dataType="date"
-                                width="120"
-                                format='yyyy/MM/dd'
-                                caption="تاریخ صدور">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="START_DATE"
-                                dataType="date"
-                                width="120"
-                                format='yyyy/MM/dd'
-                                caption="تاریخ آغاز">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="END_DATE"
-                                dataType="date"
-                                width="120"
-                                format='yyyy/MM/dd'
-                                caption="تاریخ پایان">
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="PREMIUM"
-                                dataType="string"
-                                width="120"
-                                caption="حق بیمه">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column>  
-                            <dxi-column 
-                                dataField="DUE_DEBT"
-                                dataType="string"
-                                width="130"
-                                caption="مطالبات سررسیدشده">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="NOT_DUE_DEBT"
-                                dataType="number"
-                                width="130"
-                                caption="مطالبات سررسیدنشده">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="DAMAGE"
-                                dataType="string"
-                                width="120"
-                                caption="خسارت">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column> 
-                            <dxi-column 
-                                dataField="OVERDUE_DAMAGE"
-                                dataType="string"
-                                width="120"
-                                caption="خسارت معوق">
-                                <dxo-format type="fixedPoint" [precision]="0"></dxo-format>
-                            </dxi-column>                                                                                                           
-                            -->
-                            
                             <dxi-column
                                 *ngFor="let item of arrayKey"
                                 [dataField]="item.key" 
@@ -444,11 +344,11 @@
                                     ">
                                 </dxo-format>
                             </dxi-column> 
-
+                            -->
                             <dxo-paging [enabled]="false"></dxo-paging>
                             <dxo-editing
                               mode="batch"
-                              [allowUpdating]="true"
+                              [allowUpdating]="false"
                               [allowAdding]="false"
                               [allowDeleting]="false"
                               [selectTextOnEditStart]="selectTextOnEditStart"
@@ -476,10 +376,12 @@
         <section class="step-box step-three" [hidden]="!btnThree">
             <div class="container py-3">
                 <div class="row">
-                    <div class="col-12 text-center py-3" *ngIf="infoForm">
-                        <p class="text-justify">
-                            در صورتی که اطلاعات فرم مورد تایید شماست، اطلاعات زیر را تکمیل کنید 
+                    <div class="col-12 text-center pt-3" *ngIf="infoForm">
+                        <p class="text-justify mb-0">
+                            در صورتی که اطلاعات فرم زیر مورد تایید شماست 
+                            ، توضیحات مربوطه را وارد کنید 
                             و روی دکمه ارجاع به ناظر کلیک کنید. 
+                            <br/>
                             توجه کنید که در صورت ارجاع به ناظر دیگر امکان ویرایش فایل را نخواهید داشت.
                         </p>
                     </div>
@@ -526,8 +428,8 @@
 </dx-popup>
 
 <dx-popup
-    [width]="350"
-    [height]="280"
+    [maxWidth]="400"
+    [height]="250"
     [showTitle]="true"
     [title]="popup2Title"
     [dragEnabled]="false"

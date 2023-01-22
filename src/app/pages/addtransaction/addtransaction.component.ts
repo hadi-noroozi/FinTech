@@ -7,7 +7,8 @@ import { Component, OnInit, enableProdMode } from '@angular/core';
 import { Router } from '@angular/router';
 import * as XLSX from "xlsx";
 
-import { AddtransactionService, FormList, Longtab, Record } from './addtransaction.service';
+
+import { AddtransactionService, FormList, Longtab } from './addtransaction.service';
 
 if (!/localhost/.test(document.location.host)) {
   enableProdMode();
@@ -27,6 +28,8 @@ export class AddtransactionComponent implements OnInit {
   popup2Title: String;
   popup2Content: String;
 
+  correctiveId: String;
+
   longtabs: Longtab[];
   selectedIndex: number = 0;
   selectItem: boolean = false;
@@ -35,15 +38,33 @@ export class AddtransactionComponent implements OnInit {
   public headRecords: any[] = [];
   public arrayKey: any[] = [];
 
-  public user: String;
-  public validators: any[] = ["نسترن کلاهچی" , "علیرضا عمرانی"];
-  public categories: any[] = ["مالی", "ذخایر", "سود و زیان"]
+  public user: any;
+  public validators: any[] = [
+    {
+      id: 1,
+      name: "نسترن کلاهچی"
+    },{
+      id: 2,
+      name: "علیرضا عمرانی"
+    }
+  ];
+  public categories: any[] = [
+    {
+      id: 1,
+      title: "خسارت معوقه اتکایی"
+    }, {
+      id: 2,
+      title: "ذخیره ریاضی"
+    }, {
+      id: 3,
+      title: "آمار کل اصلاحی"
+    }
+  ]
 
   btnOne: boolean = true;
   btnTwo: boolean = false;
   btnThree: boolean = false;
   btnFour: boolean = false;
-  btnFive: boolean = false;
   nextBtn: boolean = true;
 
   public colCountByScreen: any;
@@ -56,7 +77,13 @@ export class AddtransactionComponent implements OnInit {
   ) {
     this.dataSource = addTransactionService.getFormListData();
     this.longtabs = addTransactionService.getLongtabs();
-    this.user = "علیرضا عمرانی";
+    this.user = {
+      id: 15200144,
+      name: "علیرضا عمرانی",
+      role: "ویرایشگر",
+      categoryCode: 1,
+      validatorId: 1
+    } ;
     this.colCountByScreen = {
       xs: 1,
       sm: 1,
@@ -78,6 +105,7 @@ export class AddtransactionComponent implements OnInit {
       {
         dataField: 'title',
         editorType: "dxTextBox",
+        colSpan: 2,
         editorOptions: {
           readOnly: true,
           stylingMode: 'filled'
@@ -92,6 +120,9 @@ export class AddtransactionComponent implements OnInit {
         editorOptions: {
           dataSource: this.categories,
           stylingMode: 'filled',
+          displayExpr:"title",
+          valueExpr:"title",
+          readOnly: true,
           placeholder:"نوع فرم را تعیین کنید",
           onValueChanged(data) {
             this.infoForm = {...this.infoForm ,catgory: data.value};
@@ -121,17 +152,6 @@ export class AddtransactionComponent implements OnInit {
         }
       },
       {
-        dataField: 'lastEditDate',
-        editorType: "dxTextBox",
-        editorOptions: {
-          readOnly: true,
-          stylingMode: 'filled',
-        },
-        label: {
-          text: "تاریخ آخرین ویرایش",
-        }
-      },
-      {
         dataField: 'editor',
         editorType: "dxTextBox",
         editorOptions: {
@@ -147,8 +167,11 @@ export class AddtransactionComponent implements OnInit {
         editorType: "dxSelectBox",
         editorOptions: {
           dataSource: this.validators,
+          displayExpr:"name",
+          valueExpr:"name",
           placeholder:"کاربر ناظر را تعیین کنید",
           stylingMode: 'filled',
+          readOnly: true,
           onValueChanged(data) {
             this.infoForm = {...this.infoForm ,validator: data.value};
             // if(
@@ -167,9 +190,9 @@ export class AddtransactionComponent implements OnInit {
       },
       {
         dataField: 'description',
-        editorType: 'dxTextArea',
+        editorType: 'dxTextBox',
+        colSpan: 2,
         editorOptions: {
-          height: 90,
           maxLength: 200,
           placeholder:"توضیحات پیوست را وارد کنید",
           stylingMode: 'filled',
@@ -192,8 +215,10 @@ export class AddtransactionComponent implements OnInit {
     return result;
   }
 
-  showInfo() {
+  showInfo(id? : String) {
+    this.fileReset();
     this.popupVisible = true;
+    this.correctiveId = id ? id: null;
   }
 
   uploadListener(event) {
@@ -211,69 +236,110 @@ export class AddtransactionComponent implements OnInit {
       /* selected the first sheet */
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-      const { 
-        A1, 
-        A2, 
-        A3,
-        A22,
-        A28,
-        A32,
-        A41,
-        A43,
-        A44,
-        A47,
-        A50,
-        A57,
-        A62,
-        A63,
-        A64,
-        A65, 
-        ...wd }  = ws;
 
-      wd['!ref']="B2:E85";
-      delete ws.C86;
-      // delete 
-      //   ws.A1,
-      //   ws.A2,
-      //   ws.A3,
-      //   ws.A22,
-      //   ws.A28,
-      //   ws.A32,
-      //   ws.A44,
-      //   ws.A47,
-      //   ws.A50,
-      //   ws.A57,
-      //   ws.A62,
-      //   ws.A63,
-      //   ws.A64,
-      //   ws.A65;
+      // const { 
+      //   A1, 
+      //   A2, 
+      //   A3,
+      //   A22,
+      //   A28,
+      //   A32,
+      //   A41,
+      //   A43,
+      //   A44,
+      //   A47,
+      //   A50,
+      //   A57,
+      //   A62,
+      //   A63,
+      //   A64,
+      //   A65, 
+      //   ...wd }  = ws;
 
-      const data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
+      if(this.user.categoryCode == 1) {
 
-      this.records = data;
-      this.headRecords = this.records.slice(0,5);
+        this.infoForm = {
+          id: Math.floor(Math.random() * 10000000000) + 1,
+          title: ws.A1.h,
+          creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
+          editor: this.user.name,
+          category: this.categories.filter(item => item.id == this.user.categoryCode)[0].title ,
+          validator: this.validators.filter(item => item.id == this.user.validatorId)[0].name ,
+          correctiveCode: this.correctiveId,
+          status: 'مشاهده نشده',
+          comment: null
+        }
+  
+        const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
+  
+        for(let i=1; i<dataLength + 1; i++) {
+          if (ws[`A${i}`] == undefined) {
+            ws[`A${i}`] = ws[`A${i-1}`];
+          }
+        }
+  
+        const { 
+          A1, 
+          C86,
+          ...wd }  = ws;
+  
+        wd['!ref']=`A2:E${dataLength}`;
+        wd.A2.h, wd.A2.v, wd.A2.w = "field";
+        wd.B2.h, wd.B2.v, wd.B2.w = "deferredLossOfCompanyShare";
+        wd.C2.h, wd.C2.v, wd.C2.w = "deferredDamagesShareOfInsurer";
+        wd.D2.h, wd.D2.v, wd.D2.w = "netBalanceOfCompanyShare";
+        wd.E2.h, wd.E2.v, wd.E2.w = "currency";
+  
+        const data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
+  
+        for (const [key, value] of Object.entries(data[0])) {
+          this.arrayKey.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
+        }      
+  
+        this.records = data;
+        this.headRecords = this.records.slice(0,5);
+  
+        //console.log(data);
 
-      this.infoForm = {
-        id: Math.floor(Math.random() * 10000000000) + 1,
-        title: ws.A1.h,
-        creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
-        lastEditDate: new Date(event.target.files[0].lastModified).toLocaleDateString('fa-IR'),
-        editor: this.user,
-        status: 'در انتظار تایید',
-        comment: null
+      } else if(this.user.categoryCode == 2) {
+
+        this.infoForm = {
+          id: Math.floor(Math.random() * 10000000000) + 1,
+          title: ws.A1.h,
+          creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
+          editor: this.user.name,
+          category: this.categories.filter(item => item.id == this.user.categoryCode)[0].title ,
+          validator: this.validators.filter(item => item.id == this.user.validatorId)[0].name ,
+          correctiveCode: this.correctiveId,
+          status: 'مشاهده نشده',
+          comment: null
+        }
+        
+        const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
+
+        const { 
+          A1, 
+          ...wd }  = ws;
+  
+        wd['!ref']=`A2:C${dataLength}`;
+        wd.A2.h, wd.A2.v, wd.A2.w = "maintenanceShare";
+        wd.B2.h, wd.B2.v, wd.B2.w = "reinsuranceShare";
+        wd.C2.h, wd.C2.v, wd.C2.w = "total";
+
+        const data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
+  
+        for (const [key, value] of Object.entries(data[0])) {
+          this.arrayKey.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
+        }      
+  
+        this.records = data;
+        this.headRecords = this.records;
+        
+      } else if( this.user.categoryCode == 3) {
+
       }
 
-      // this.infoForm = {
-      //   id: event.target.files[0].name.split('-')[1].split('.')[0],
-      //   title: event.target.files[0].name.split('-')[0],
-      //   creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
-      //   lastEditDate: new Date(event.target.files[0].lastModified).toLocaleDateString('fa-IR'),
-      //   editor: this.user,
-      //   status: 'در انتظار تایید',
-      //   comment: null
-      // }
-
-      console.log(ws);
+      
     }
 
     /* wire up file reader */
@@ -326,10 +392,12 @@ export class AddtransactionComponent implements OnInit {
   }
 
   fileReset() {
-
     this.infoForm = {};
     this.headRecords = [];
     this.records = [];
+    this.arrayKey = [];
+    this.correctiveId = null;
+    //console.log(this.infoForm, this.records, this.arrayKey, this.correctiveId)
   }
 
   submitOne() {
@@ -354,7 +422,7 @@ export class AddtransactionComponent implements OnInit {
     this.longtabs[2].disabled = true;
     this.longtabs[3].disabled = false;
     this.selectedIndex = 3;
-    this.dataSource.push(this.infoForm);
+    this.dataSource.unshift(this.infoForm);
   }
 
   returnOne() {
@@ -374,12 +442,13 @@ export class AddtransactionComponent implements OnInit {
   }
 
   returnThree() {
+    this.btnOne = false;
+    this.btnFour = false;
+    this.longtabs[0].disabled = false;
+    this.longtabs[3].disabled = true;
+    this.selectedIndex = 0;
     this.popupVisible = false;
     this.fileReset();
-    this.longtabs[0].disabled = false;
-    this.longtabs[1].disabled = true;
-    this.longtabs[2].disabled = true;
-    this.longtabs[3].disabled = true;
   }  
 
   showDescription(id) {
@@ -387,6 +456,7 @@ export class AddtransactionComponent implements OnInit {
     this.popup2Content = this.dataSource.filter(item => item.id == id )[0].description;
     this.popupVisible2 = true;
   }
+  
   showComment(id) {
     this.popup2Title = "نظر ناظر | " + this.dataSource.filter(item => item.id == id )[0].title;
     this.popup2Content = this.dataSource.filter(item => item.id == id )[0].comment;
