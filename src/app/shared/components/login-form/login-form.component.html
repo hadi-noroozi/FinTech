@@ -7,9 +7,9 @@
   <dx-form [formData]="formData" [disabled]="loading">
 
     <dxi-item dataField="email" editorType="dxTextBox"
-      [editorOptions]="{ stylingMode: 'filled', placeholder: 'نام کاربری', mode: 'text', rtlEnabled: true, cssClass:'item-with-validation' }">
-      <dxi-validation-rule type="required" message="نام کاربری خود را وارد کنید"></dxi-validation-rule>
-      <dxi-validation-rule type="email" message="نام کاربری وارد شده معتبر نیست"></dxi-validation-rule>
+      [editorOptions]="{ stylingMode: 'filled', placeholder: 'رایانامه', mode: 'text', rtlEnabled: true, cssClass:'item-with-validation' }">
+      <dxi-validation-rule type="required" message="رایانامه خود را وارد کنید"></dxi-validation-rule>
+      <dxi-validation-rule type="email" message="رایانامه وارد شده معتبر نیست"></dxi-validation-rule>
       <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
 

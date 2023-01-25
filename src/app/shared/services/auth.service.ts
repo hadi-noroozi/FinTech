@@ -9,7 +9,8 @@ const defaultUser = {
 
 @Injectable()
 export class AuthService {
-  private _user = defaultUser;
+  // private _user = defaultUser;
+  private _user;
   get loggedIn(): boolean {
     return !!this._user;
   }
@@ -26,18 +27,25 @@ export class AuthService {
     try {
       // Send request
       // console.log(email, password);
-      this._user = { ...defaultUser, email };
-      this.router.navigate([this._lastAuthenticatedPath]);
 
-      return {
-        isOk: true,
-        data: this._user
-      };
+      if(email == 'alirezaomrani@iic.com' && password == 'Aa123!@#') {
+        this._user = { ...defaultUser, email };
+        this.router.navigate([this._lastAuthenticatedPath]);
+        return {
+          isOk: true,
+          data: this._user
+        };
+      } else {
+        return {
+          isOk: false,
+          message: "حساب کاربری یا گذرواژه صحیح نمی باشد"
+        };
+      }
     }
     catch {
       return {
         isOk: false,
-        message: "Authentication failed"
+        message: "حساب کاربری یا گذرواژه صحیح نمی باشد"
       };
     }
   }
@@ -96,16 +104,23 @@ export class AuthService {
   async resetPassword(email: string) {
     try {
       // Send request
-      console.log(email);
+      if(email == 'alirezaomrani@iic.com') {
+        console.log(email);
 
-      return {
-        isOk: true
-      };
+        return {
+          isOk: true
+        };
+      } else {
+        return {
+          isOk: false,
+          message: "رایانامه وارد شده معتبر نیست"
+        };
+      }
     }
     catch {
       return {
         isOk: false,
-        message: "Failed to reset password"
+        message: "در فرآیند تغییر رمز عبور مشکلی پیش  آمده دوباره سعی کنید"
       };
     }
   }
