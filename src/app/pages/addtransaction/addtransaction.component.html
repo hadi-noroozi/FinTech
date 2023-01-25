@@ -14,11 +14,18 @@
                         (onClick)="showInfo()"
                         [rtlEnabled]="true">
                     </dx-button>
-                    <div class="dx-field mr-auto">
-                        <div class="dx-field-label">نوع فرم (فقط 1 و2)</div>
+                    <div class="dx-field mr-auto" [hidden]="user.PositionId!=1">
+                        <div class="dx-field-label">نوع فرم تعیین کنید (فقط 1و2و3)</div>
                         <div class="dx-field-value text-center">
                           <dx-text-box stylingMode="filled" [(value)]="user.categoryCode"></dx-text-box>
                         </div>
+                    </div>
+                    <div class="dx-field mr-auto" [hidden]="user.PositionId!=2">
+                        <p class="py-3 text-muted mb-3 pl-2">
+                            <small>
+                                نوع فرم قابل الصاق: {{formType}}
+                            </small>
+                        </p>
                     </div>
                 </div>
 
@@ -182,7 +189,16 @@
                                     
                                     (item.key == 'maintenanceShare') ? 'سهم نگهداری ' :
                                     (item.key == 'reinsuranceShare') ? 'سهم اتکایی' :  
-                                    (item.key == 'total') ? 'کل' : ''              
+                                    (item.key == 'total') ? 'کل' : 
+                                    
+                                    (item.key == 'subfield') ? 'زیررشته' :
+                                    (item.key == 'issueYear') ? 'سال صدور' :
+                                    (item.key == 'shareOfDeferredLossOfCompany') ? 'خسارت معوق سهم بیمه ایران' :  
+                                    (item.key == 'mandatoryReinsurersShare') ? 'اجباری بیمه گران اتکایی' :
+                                    (item.key == 'optionalReinsurersShare') ? 'اختیاری بیمه گران اتکایی' :
+                                    (item.key == 'contractualReinsurersShare') ?  'قراردادی بیمه گران اتکایی' :
+                                    (item.key == 'totalReinsurersShare') ? 'مجموع سهم بیمه گران اتکایی' :
+                                    (item.key == 'netDeferredLossOfCompanyShare') ? 'سهم خالص بیمه ایران' : ''
                                 ">
                                 <dxo-format 
                                     type="fixedPoint" 
@@ -193,7 +209,14 @@
 
                                         (item.key == 'maintenanceShare') ||
                                         (item.key == 'reinsuranceShare') ||
-                                        (item.key == 'total') 
+                                        (item.key == 'total') ||
+
+                                        (item.key == 'shareOfDeferredLossOfCompany') ||
+                                        (item.key == 'mandatoryReinsurersShare') ||
+                                        (item.key == 'optionalReinsurersShare') ||
+                                        (item.key == 'contractualReinsurersShare') ||
+                                        (item.key == 'totalReinsurersShare') ||
+                                        (item.key == 'netDeferredLossOfCompanyShare')                                         
                                     ">
                                 </dxo-format>
                             </dxi-column> 
@@ -287,26 +310,42 @@
                                 [dataField]="item.key" 
                                 [dataType]="item.type" 
                                 [caption]="
-                                    (item.key == 'field') ? 'رشته' :
-                                    (item.key == 'deferredLossOfCompanyShare') ? '100% خسارت معوق سهم شرکت ' :
-                                    (item.key == 'deferredDamagesShareOfInsurer') ? 'خسارت معوق سهم بیمه گران اتکایی' :  
-                                    (item.key == 'netBalanceOfCompanyShare') ? 'مانده خالص سهم شرکت' :
-                                    (item.key == 'currency') ? 'واحد ارز' :
-                                                                        
-                                    (item.key == 'maintenanceShare') ? 'سهم نگهداری ' :
-                                    (item.key == 'reinsuranceShare') ? 'سهم اتکایی' :  
-                                    (item.key == 'total') ? 'کل' : ''               
+                                (item.key == 'field') ? 'رشته' :
+                                (item.key == 'deferredLossOfCompanyShare') ? '100% خسارت معوق سهم شرکت ' :
+                                (item.key == 'deferredDamagesShareOfInsurer') ? 'خسارت معوق سهم بیمه گران اتکایی' :  
+                                (item.key == 'netBalanceOfCompanyShare') ? 'مانده خالص سهم شرکت' :
+                                (item.key == 'currency') ? 'واحد ارز' :
+                                
+                                (item.key == 'maintenanceShare') ? 'سهم نگهداری ' :
+                                (item.key == 'reinsuranceShare') ? 'سهم اتکایی' :  
+                                (item.key == 'total') ? 'کل' : 
+                                
+                                (item.key == 'subfield') ? 'زیررشته' :
+                                (item.key == 'issueYear') ? 'سال صدور' :
+                                (item.key == 'shareOfDeferredLossOfCompany') ? 'خسارت معوق سهم بیمه ایران' :  
+                                (item.key == 'mandatoryReinsurersShare') ? 'اجباری بیمه گران اتکایی' :
+                                (item.key == 'optionalReinsurersShare') ? 'اختیاری بیمه گران اتکایی' :
+                                (item.key == 'contractualReinsurersShare') ?  'قراردادی بیمه گران اتکایی' :
+                                (item.key == 'totalReinsurersShare') ? 'مجموع سهم بیمه گران اتکایی' :
+                                (item.key == 'netDeferredLossOfCompanyShare') ? 'سهم خالص بیمه ایران' : ''              
                                 ">
                                 <dxo-format 
                                     type="fixedPoint" 
                                     *ngIf="
-                                        (item.key == 'deferredLossOfCompanyShare') ||
-                                        (item.key == 'deferredDamagesShareOfInsurer') ||
-                                        (item.key == 'netBalanceOfCompanyShare') ||
+                                    (item.key == 'deferredLossOfCompanyShare') ||
+                                    (item.key == 'deferredDamagesShareOfInsurer') ||
+                                    (item.key == 'netBalanceOfCompanyShare') ||
 
-                                        (item.key == 'maintenanceShare') ||
-                                        (item.key == 'reinsuranceShare') ||
-                                        (item.key == 'total') 
+                                    (item.key == 'maintenanceShare') ||
+                                    (item.key == 'reinsuranceShare') ||
+                                    (item.key == 'total') ||
+
+                                    (item.key == 'shareOfDeferredLossOfCompany') ||
+                                    (item.key == 'mandatoryReinsurersShare') ||
+                                    (item.key == 'optionalReinsurersShare') ||
+                                    (item.key == 'contractualReinsurersShare') ||
+                                    (item.key == 'totalReinsurersShare') ||
+                                    (item.key == 'netDeferredLossOfCompanyShare')    
                                     ">
                                 </dxo-format>
                             </dxi-column> 

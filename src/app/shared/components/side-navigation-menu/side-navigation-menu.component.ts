@@ -1,7 +1,9 @@
 import { Component, NgModule, Output, Input, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { ItemClickEvent } from 'devextreme/ui/tree_view';
 import { DxTreeViewModule, DxTreeViewComponent } from 'devextreme-angular/ui/tree-view';
-import { navigation } from '../../../app-navigation';
+import { navigation, navigation2 } from '../../../app-navigation';
+
+import { AuthService } from 'src/app/shared/services';
 
 import * as events from 'devextreme/events';
 
@@ -31,15 +33,29 @@ export class SideNavigationMenuComponent implements AfterViewInit, OnDestroy {
     this.menu.instance.selectItem(value);
   }
 
+  userInfo: any;
+  public user: any;
+
   private _items;
   get items() {
-    if (!this._items) {
-      this._items = navigation.map((item) => {
-        if(item.path && !(/^\//.test(item.path))){
-          item.path = `/${item.path}`;
-        }
-         return { ...item, expanded: !this._compactMode }
-        });
+    if(this.user.PositionId == 1) {
+      if (!this._items) {
+        this._items = navigation.map((item) => {
+          if(item.path && !(/^\//.test(item.path))){
+            item.path = `/${item.path}`;
+          }
+           return { ...item, expanded: !this._compactMode }
+          });
+      }
+    } else if (this.user.PositionId == 2) {
+      if (!this._items) {
+        this._items = navigation2.map((item) => {
+          if(item.path && !(/^\//.test(item.path))){
+            item.path = `/${item.path}`;
+          }
+           return { ...item, expanded: !this._compactMode }
+          });
+      }
     }
 
     return this._items;
@@ -64,7 +80,13 @@ export class SideNavigationMenuComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(
+    private elementRef: ElementRef,
+    authService: AuthService
+  ) { 
+    this.userInfo = authService.getUser();
+    this.user = this.userInfo.__zone_symbol__value.data;  
+  }
 
   onItemClick(event: ItemClickEvent) {
     this.selectedItemChanged.emit(event);

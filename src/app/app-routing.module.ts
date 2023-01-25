@@ -25,7 +25,8 @@ import {
 import { AddtransactionComponent } from './pages/addtransaction/addtransaction.component';
 import { GridCellDataPipe } from './grid-cell-data.pipe';
 
-const routes: Routes = [
+
+const routes: Routes =  [
   {
     path: 'pages/addtransaction',
     component: AddtransactionComponent,
@@ -103,4 +104,8 @@ const routes: Routes = [
   ]
 })
 
-export class AppRoutingModule { }
+export class AppRoutingModule {
+
+  
+
+}

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import 'devextreme/data/odata/store';
 
 import { AddtransactionService, FormList } from '../addtransaction/addtransaction.service';
+import { AuthService } from 'src/app/shared/services';
 
 @Component({
   templateUrl: 'tasks.component.html',
@@ -14,26 +15,16 @@ export class TasksComponent {
   popup2Title: String;
   popup2Content: String;
 
-  constructor( addTransactionService: AddtransactionService,) {
+  userInfo: any;
+  public user: any;
+
+  constructor( 
+    addTransactionService: AddtransactionService,
+    authService: AuthService,
+  ) {
+    this.userInfo = authService.getUser();
+    this.user = this.userInfo.__zone_symbol__value.data;    
     this.dataSource = addTransactionService.getFormListData();
-    // this.dataSource = {
-    //   store: {
-    //     type: 'odata',
-    //     key: 'Task_ID',
-    //     url: 'https://js.devexpress.com/Demos/DevAV/odata/Tasks'
-    //   },
-    //   expand: 'ResponsibleEmployee',
-    //   select: [
-    //     'Task_ID',
-    //     'Task_Subject',
-    //     'Task_Start_Date',
-    //     'Task_Due_Date',
-    //     'Task_Status',
-    //     'Task_Priority',
-    //     'Task_Completion',
-    //     'ResponsibleEmployee/Employee_Full_Name'
-    //   ]
-    // };
   }
 
   buttonsValidatior(rowData) {

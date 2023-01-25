@@ -3,8 +3,37 @@ import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 
 const defaultPath = '/';
 const defaultUser = {
+  ID: 15200144,
   email: 'alirezaomrani@iic.com',
-  avatarUrl: 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/07.png'
+  avatarUrl: 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/07.png',
+  FirstName: 'علیرضا',
+  LastName: 'عمرانی',
+  name: "علیرضا عمرانی",
+  Position: 'کارشناس',
+  PositionId: 2,
+  BirthDate: new Date('1974/11/15').toLocaleString('fa-IR').split("،")[0],
+  HireDate: new Date('2005/05/11').toLocaleString('fa-IR').split("،")[0],
+  /* tslint:disable-next-line:max-line-length */
+  Notes: 'معاون بخش آمار و اطلاعات بیمه ایران',
+  categoryCode: 1,
+  validatorId: 1
+};
+
+const adminUser = {
+  ID: 1,
+  email: 'nastarankolahchi@iic.com',
+  avatarUrl: 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/04.png',
+  FirstName: 'نسترن',
+  LastName: 'کلاهچی',
+  name: "نسترن کلاهچی",
+  Position: 'ناظر',
+  PositionId: 1,
+  BirthDate: new Date('1974/11/15').toLocaleString('fa-IR').split("،")[0],
+  HireDate: new Date('2005/05/11').toLocaleString('fa-IR').split("،")[0],
+  /* tslint:disable-next-line:max-line-length */
+  Notes: 'مدیریت بخش آمار و اطلاعات بیمه ایران',
+  categoryCode: '',
+  validatorId: 1
 };
 
 @Injectable()
@@ -28,8 +57,15 @@ export class AuthService {
       // Send request
       // console.log(email, password);
 
-      if(email == 'alirezaomrani@iic.com' && password == 'Aa123!@#') {
+      if(email == defaultUser.email && password == 'Aa123!@#') {
         this._user = { ...defaultUser, email };
+        this.router.navigate(['pages/addtransaction']);
+        return {
+          isOk: true,
+          data: this._user
+        };
+      } else if(email == adminUser.email && password == 'Aa12#$') {
+        this._user = { ...adminUser, email };
         this.router.navigate([this._lastAuthenticatedPath]);
         return {
           isOk: true,
@@ -133,7 +169,12 @@ export class AuthService {
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
-  constructor(private router: Router, private authService: AuthService) { }
+
+
+
+  constructor(private router: Router, private authService: AuthService) {
+    
+  }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const isLoggedIn = this.authService.loggedIn;
@@ -161,3 +202,6 @@ export class AuthGuardService implements CanActivate {
     return isLoggedIn || isAuthForm;
   }
 }
+
+
+

@@ -9,6 +9,7 @@ import * as XLSX from "xlsx";
 
 
 import { AddtransactionService, FormList, Longtab } from './addtransaction.service';
+import { AuthService } from 'src/app/shared/services';
 
 if (!/localhost/.test(document.location.host)) {
   enableProdMode();
@@ -20,6 +21,7 @@ if (!/localhost/.test(document.location.host)) {
   styleUrls: ['./addtransaction.component.scss']
 })
 export class AddtransactionComponent implements OnInit {
+
 
   dataSource: FormList[];
 
@@ -38,6 +40,7 @@ export class AddtransactionComponent implements OnInit {
   public headRecords: any[] = [];
   public arrayKey: any[] = [];
 
+  userInfo: any;
   public user: any;
   public validators: any[] = [
     {
@@ -71,19 +74,27 @@ export class AddtransactionComponent implements OnInit {
   public infoForm: any;
   public formItem: any[];
 
+  formType: String;
+
   constructor(
     addTransactionService: AddtransactionService,
+    authService: AuthService,
     private router: Router
   ) {
+    this.userInfo = authService.getUser();
+    this.user = this.userInfo.__zone_symbol__value.data;
+    this.formType = (this.user.PositionId==2) ? 
+      this.categories.filter(item => item.id == this.user.categoryCode)[0].title : null;
+                  
     this.dataSource = addTransactionService.getFormListData();
     this.longtabs = addTransactionService.getLongtabs();
-    this.user = {
-      id: 15200144,
-      name: "علیرضا عمرانی",
-      role: "ویرایشگر",
-      categoryCode: 1,
-      validatorId: 1
-    } ;
+    // this.user = {
+    //   id: 15200144,
+    //   name: "علیرضا عمرانی",
+    //   role: "ویرایشگر",
+    //   categoryCode: 1,
+    //   validatorId: 1
+    // };
     this.colCountByScreen = {
       xs: 1,
       sm: 1,
@@ -208,6 +219,7 @@ export class AddtransactionComponent implements OnInit {
   }
 
   ngOnInit() {
+    //console.log(this.user)
   }
 
   buttonsValidatior(rowData) {
@@ -256,31 +268,33 @@ export class AddtransactionComponent implements OnInit {
       //   A65, 
       //   ...wd }  = ws;
 
-      if(this.user.categoryCode == 1) {
+      this.infoForm = {
+        id: Math.floor(Math.random() * 10000000000) + 1,
+        title: ws.A1.h,
+        creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
+        editor: this.user.name,
+        category: this.categories.filter(item => item.id == this.user.categoryCode)[0].title ,
+        validator: this.validators.filter(item => item.id == this.user.validatorId)[0].name ,
+        correctiveCode: this.correctiveId,
+        status: 'مشاهده نشده',
+        comment: null
+      }
 
-        this.infoForm = {
-          id: Math.floor(Math.random() * 10000000000) + 1,
-          title: ws.A1.h,
-          creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
-          editor: this.user.name,
-          category: this.categories.filter(item => item.id == this.user.categoryCode)[0].title ,
-          validator: this.validators.filter(item => item.id == this.user.validatorId)[0].name ,
-          correctiveCode: this.correctiveId,
-          status: 'مشاهده نشده',
-          comment: null
-        }
+      let data;
+
+      if(this.user.categoryCode == 1) {
   
         const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
   
-        for(let i=1; i<dataLength + 1; i++) {
-          if (ws[`A${i}`] == undefined) {
-            ws[`A${i}`] = ws[`A${i-1}`];
-          }
-        }
+        // for(let i=1; i<dataLength + 1; i++) {
+        //   if (ws[`A${i}`] == undefined) {
+        //     ws[`A${i}`] = ws[`A${i-1}`];
+        //   }
+        // }
   
         const { 
           A1, 
-          C86,
+          // C86,
           ...wd }  = ws;
   
         wd['!ref']=`A2:E${dataLength}`;
@@ -290,30 +304,12 @@ export class AddtransactionComponent implements OnInit {
         wd.D2.h, wd.D2.v, wd.D2.w = "netBalanceOfCompanyShare";
         wd.E2.h, wd.E2.v, wd.E2.w = "currency";
   
-        const data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
-  
-        for (const [key, value] of Object.entries(data[0])) {
-          this.arrayKey.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
-        }      
-  
-        this.records = data;
-        this.headRecords = this.records.slice(0,5);
+        data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
   
         //console.log(data);
 
       } else if(this.user.categoryCode == 2) {
 
-        this.infoForm = {
-          id: Math.floor(Math.random() * 10000000000) + 1,
-          title: ws.A1.h,
-          creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
-          editor: this.user.name,
-          category: this.categories.filter(item => item.id == this.user.categoryCode)[0].title ,
-          validator: this.validators.filter(item => item.id == this.user.validatorId)[0].name ,
-          correctiveCode: this.correctiveId,
-          status: 'مشاهده نشده',
-          comment: null
-        }
         
         const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
 
@@ -326,20 +322,47 @@ export class AddtransactionComponent implements OnInit {
         wd.B2.h, wd.B2.v, wd.B2.w = "reinsuranceShare";
         wd.C2.h, wd.C2.v, wd.C2.w = "total";
 
-        const data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
-  
-        for (const [key, value] of Object.entries(data[0])) {
-          this.arrayKey.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
-        }      
-  
-        this.records = data;
-        this.headRecords = this.records;
+        data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
         
       } else if( this.user.categoryCode == 3) {
+  
+        const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
+  
+        // for(let i=1; i<dataLength + 1; i++) {
+        //   if (ws[`A${i}`] == undefined) {
+        //     ws[`A${i}`] = ws[`A${i-1}`];
+        //   }
+        // }
+  
+        const { 
+          A1, 
+          ...wd }  = ws;
+  
+        wd['!ref']=`B2:K${dataLength}`;
+        wd.A2.h, wd.A2.v, wd.A2.w = "mandatoryRatio";
+        wd.B2.h, wd.B2.v, wd.B2.w = "field";
+        wd.C2.h, wd.C2.v, wd.C2.w = "subfield";
+        wd.D2.h, wd.D2.v, wd.D2.w = "issueYear";
+        wd.E2.h, wd.E2.v, wd.E2.w = "currency";
+        wd.F2.h, wd.F2.v, wd.F2.w = "shareOfDeferredLossOfCompany";
+        wd.G2.h, wd.G2.v, wd.G2.w = "mandatoryReinsurersShare";
+        wd.H2.h, wd.H2.v, wd.H2.w = "optionalReinsurersShare";
+        wd.I2.h, wd.I2.v, wd.I2.w = "contractualReinsurersShare";
+        wd.J2.h, wd.J2.v, wd.J2.w = "totalReinsurersShare";
+        wd.K2.h, wd.K2.v, wd.K2.w = "netDeferredLossOfCompanyShare";
 
+        data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
+  
+        console.log(data);
       }
 
-      
+      for (const [key, value] of Object.entries(data[0])) {
+        this.arrayKey.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
+      }      
+
+      this.records = data;
+      this.headRecords = this.records.slice(0,5);
+
     }
 
     /* wire up file reader */

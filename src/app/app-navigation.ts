@@ -1,6 +1,6 @@
 export const navigation = [
   {
-    text: 'سامانه جامع مالی',
+    text: 'سامانه جامع مالی' ,
     path: '/home',
     icon: 'home'
   },
@@ -14,9 +14,22 @@ export const navigation = [
     icon: 'user',
     path: '/profile'
   },
+  // {
+  //   text: 'الصاق فرم',
+  //   path: '/pages/addtransaction',
+  //   icon: 'plus'
+  // }
+];
+
+export const navigation2 = [
+  {
+    text: 'حساب کاربری',
+    icon: 'user',
+    path: '/profile'
+  },
   {
     text: 'الصاق فرم',
     path: '/pages/addtransaction',
     icon: 'plus'
   }
-];
+]

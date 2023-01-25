@@ -2,7 +2,7 @@
 
 <div class="content-block p-4 dx-card wide-card text-right d-flex align-middle align-item-center" dir="rtl">
   <div class="form-avatar">
-    <img src="https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/{{employee.Picture}}"/>
+    <img [src]="employee.avatarUrl"/>
   </div>
   <div class="user-info align-middle align-item-center my-auto">
       <h6>{{employee.FirstName}} {{employee.LastName}}</h6>
