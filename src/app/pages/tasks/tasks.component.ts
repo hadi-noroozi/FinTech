@@ -28,7 +28,7 @@ export class TasksComponent {
   }
 
   buttonsValidatior(rowData) {
-    const result = [rowData.id,rowData.status];
+    const result = [rowData.id,rowData.status, rowData.address];
     return result;
   }
 

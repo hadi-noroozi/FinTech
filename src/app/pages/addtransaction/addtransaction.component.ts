@@ -42,6 +42,7 @@ export class AddtransactionComponent implements OnInit {
 
   userInfo: any;
   public user: any;
+
   public validators: any[] = [
     {
       id: 1,
@@ -51,18 +52,23 @@ export class AddtransactionComponent implements OnInit {
       name: "علیرضا عمرانی"
     }
   ];
+
   public categories: any[] = [
     {
       id: 1,
-      title: "خسارت معوقه اتکایی"
+      title: "خسارت معوقه اتکایی",
+      sample: "../../../assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
     }, {
       id: 2,
-      title: "ذخیره ریاضی"
+      title: "ذخیره ریاضی",
+      sample: "../../../assets/sample-file/نمونه جدول ذخیره ریاضی (مدیریت اشخاص).xlsx"
     }, {
       id: 3,
-      title: "آمار کل اصلاحی"
+      title: "آمار کل اصلاحی",
+      sample: "../../../assets/sample-file/نمونه جدول آمار اصلاحی خسارات معوقه شرکت.xlsx"
     }
-  ]
+  ];
+  slectedCategroy: any;
 
   btnOne: boolean = true;
   btnTwo: boolean = false;
@@ -85,7 +91,7 @@ export class AddtransactionComponent implements OnInit {
     this.user = this.userInfo.__zone_symbol__value.data;
     this.formType = (this.user.PositionId==2) ? 
       this.categories.filter(item => item.id == this.user.categoryCode)[0].title : null;
-                  
+    this.slectedCategroy = this.categories.filter(item => item.id == this.user.categoryCode)[0];
     this.dataSource = addTransactionService.getFormListData();
     this.longtabs = addTransactionService.getLongtabs();
     // this.user = {
@@ -223,7 +229,7 @@ export class AddtransactionComponent implements OnInit {
   }
 
   buttonsValidatior(rowData) {
-    const result = [rowData.id,rowData.status];
+    const result = [rowData.id,rowData.status, rowData.address];
     return result;
   }
 
@@ -276,8 +282,9 @@ export class AddtransactionComponent implements OnInit {
         category: this.categories.filter(item => item.id == this.user.categoryCode)[0].title ,
         validator: this.validators.filter(item => item.id == this.user.validatorId)[0].name ,
         correctiveCode: this.correctiveId,
-        status: 'مشاهده نشده',
-        comment: null
+        status: 'در انتظار تایید',
+        comment: null,
+        address: this.slectedCategroy.sample
       }
 
       let data;

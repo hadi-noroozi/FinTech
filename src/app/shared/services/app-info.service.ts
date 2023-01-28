@@ -5,7 +5,7 @@ export class AppInfoService {
   constructor() {}
 
   public get title() {
-    return 'Devexp';
+    return 'سامانه جامع مالی';
   }
 
   public get currentYear() {

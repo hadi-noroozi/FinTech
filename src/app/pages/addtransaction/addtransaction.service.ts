@@ -12,6 +12,7 @@ export class FormList {
   status: String;
   description: String;
   comment: String;
+  address: String;
 }
 
 const formList: FormList[] = [
@@ -23,9 +24,10 @@ const formList: FormList[] = [
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/10/20"),
     validator: "نسترن کلاهچی",
-    status: "مشاهده نشده",
+    status: "در انتظار تایید",
     description: "توضیحات یک",
-    comment: "نظر یک"
+    comment: "نظر یک",
+    address: "./assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
   }, {
     id: '1546411456',
     title: 'خسارت معوقه قبولی اصلاحی سال 1400',
@@ -34,9 +36,10 @@ const formList: FormList[] = [
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/10/01"),
     validator: "نسترن کلاهچی",
-    status: "مشاهده شده",
+    status: "تایید شده",
     description: "توضیحات دو",
-    comment: "نظر دو"
+    comment: "نظر دو",
+    address: "./assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
   }, {
     id: '5442111456',
     correctiveCode: '1546411456',
@@ -46,9 +49,10 @@ const formList: FormList[] = [
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/09/21"),
     validator: "نسترن کلاهچی",
-    status: "مشاهده شده",
+    status: "تایید شده",
     description: "توضیحات سه",
-    comment: "نظر سه"
+    comment: "نظر سه",
+    address: "./assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
   }, {
     id: '1546411456',
     title: 'خسارت معوقه قبولی اصلاحی سال 1400',
@@ -57,9 +61,10 @@ const formList: FormList[] = [
     editor: "علیرضا عمرانی",
     lastEditDate: new Date("1400/08/30"),
     validator: "نسترن کلاهچی",
-    status: "مشاهده شده",
+    status: "نیازمند ویرایش",
     description: "توضیحات چهار",
-    comment: "نظر چهار"
+    comment: "نظر چهار",
+    address: "./assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
   },
 ]
 

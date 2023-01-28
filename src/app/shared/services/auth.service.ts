@@ -38,7 +38,7 @@ const adminUser = {
 
 @Injectable()
 export class AuthService {
-  // private _user = defaultUser;
+  //private _user = defaultUser;
   private _user;
   get loggedIn(): boolean {
     return !!this._user;
@@ -56,10 +56,15 @@ export class AuthService {
     try {
       // Send request
       // console.log(email, password);
+      // this.router.navigate(['addform']);
+      // return {
+      //   isOk: true,
+      //   data: this._user
+      // };
 
       if(email == defaultUser.email && password == 'Aa123!@#') {
         this._user = { ...defaultUser, email };
-        this.router.navigate(['pages/addtransaction']);
+        this.router.navigate(['addform']);
         return {
           isOk: true,
           data: this._user

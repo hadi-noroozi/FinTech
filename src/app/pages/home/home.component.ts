@@ -10,6 +10,9 @@ import { AuthService } from 'src/app/shared/services';
 export class HomeComponent {
 
   dataSource: FormList[];
+  popupVisible2 = false;
+  popup2Title: String;
+  popup2Content: String;
 
   userInfo: any;
   public user: any;
@@ -20,6 +23,20 @@ export class HomeComponent {
   ) {
     this.userInfo = authService.getUser();
     this.user = this.userInfo.__zone_symbol__value.data;    
-    this.dataSource = addTransactionService.getFormListData();
+    this.dataSource = addTransactionService.getFormListData().filter(
+      item => item.status == "در انتظار تایید"
+    );
+  }
+
+  
+  buttonsValidatior(rowData) {
+    const result = [rowData.id,rowData.status, rowData.address];
+    return result;
+  }
+
+  showDescription(id) {
+    this.popup2Title = "توضیحات " + this.dataSource.filter(item => item.id == id )[0].title;
+    this.popup2Content = this.dataSource.filter(item => item.id == id )[0].description;
+    this.popupVisible2 = true;
   }
 }

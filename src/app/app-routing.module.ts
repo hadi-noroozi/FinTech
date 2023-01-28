@@ -28,7 +28,7 @@ import { GridCellDataPipe } from './grid-cell-data.pipe';
 
 const routes: Routes =  [
   {
-    path: 'pages/addtransaction',
+    path: 'addform',
     component: AddtransactionComponent,
     canActivate: [ AuthGuardService ]
   },
