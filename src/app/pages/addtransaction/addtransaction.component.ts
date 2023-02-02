@@ -57,15 +57,15 @@ export class AddtransactionComponent implements OnInit {
     {
       id: 1,
       title: "خسارت معوقه اتکایی",
-      sample: "../../../assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
+      sample: "../../../assets/sample-file/sample1.xlsx"
     }, {
       id: 2,
       title: "ذخیره ریاضی",
-      sample: "../../../assets/sample-file/نمونه جدول ذخیره ریاضی (مدیریت اشخاص).xlsx"
+      sample: "../../../assets/sample-file/sample2.xlsx"
     }, {
       id: 3,
       title: "آمار کل اصلاحی",
-      sample: "../../../assets/sample-file/نمونه جدول آمار اصلاحی خسارات معوقه شرکت.xlsx"
+      sample: "../../../assets/sample-file/sample3.xlsx"
     }
   ];
   slectedCategroy: any;
@@ -205,6 +205,36 @@ export class AddtransactionComponent implements OnInit {
           text: "ناظر",
         }
       },
+      {
+        dataField: 'fiscalYear',
+        editorType: 'dxTextBox',
+        editorOptions: {
+          maxLength: 200,
+          placeholder:"سال مالی را وارد کنید",
+          stylingMode: 'filled',
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,fiscalYear: data.value};
+          },
+        },
+        label: {
+          text: "سال مالی",
+        }
+      },  
+      {
+        dataField: 'fiscalPeriod',
+        editorType: 'dxTextBox',
+        editorOptions: {
+          maxLength: 200,
+          placeholder:"دوره مالی را وارد کنید",
+          stylingMode: 'filled',
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,fiscalPeriod: data.value};
+          },
+        },
+        label: {
+          text: "دوره مالی",
+        }
+      },      
       {
         dataField: 'description',
         editorType: 'dxTextBox',

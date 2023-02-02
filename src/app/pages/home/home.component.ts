@@ -14,6 +14,11 @@ export class HomeComponent {
   popup2Title: String;
   popup2Content: String;
 
+  notCheckedForms: Number;
+  validateForms: Number;
+  notValidateForms: Number;
+  allForms: Number;
+
   userInfo: any;
   public user: any;
 
@@ -23,9 +28,15 @@ export class HomeComponent {
   ) {
     this.userInfo = authService.getUser();
     this.user = this.userInfo.__zone_symbol__value.data;    
+    let fullData = addTransactionService.getFormListData();
     this.dataSource = addTransactionService.getFormListData().filter(
       item => item.status == "در انتظار تایید"
     );
+
+    this.allForms = fullData.length;
+    this.notCheckedForms = fullData.filter(item => item.status=="در انتظار تایید").length;
+    this.validateForms = fullData.filter(item => item.status=="تایید شده").length;
+    this.notValidateForms = fullData.filter(item => item.status=="نیازمند ویرایش").length;
   }
 
   
@@ -38,5 +49,9 @@ export class HomeComponent {
     this.popup2Title = "توضیحات " + this.dataSource.filter(item => item.id == id )[0].title;
     this.popup2Content = this.dataSource.filter(item => item.id == id )[0].description;
     this.popupVisible2 = true;
+  }
+
+  goToLink(url: string){
+    window.open(url, "_blank");
   }
 }

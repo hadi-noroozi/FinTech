@@ -50,21 +50,27 @@
                         [rtlEnabled]="true">
 
                         
-                        <dxi-column caption="#" dataField="id" dataType="string" [hidingPriority]="0">
+                        <dxi-column caption="#" dataField="id" dataType="string" [hidingPriority]="3">
                         </dxi-column>
-                        <dxi-column caption="عنوان فرم" dataField="title" dataType="string" [hidingPriority]="8">
+                        <dxi-column caption="عنوان فرم" dataField="title" dataType="string" [hidingPriority]="9">
                         </dxi-column>
-                        <dxi-column caption="دسته بندی" dataField="category" dataType="string" [hidingPriority]="6">
+                        <dxi-column caption="دسته بندی" dataField="category" dataType="string" [hidingPriority]="5">
                         </dxi-column>
-                        <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string" [hidingPriority]="1">
-                        </dxi-column>                        
-                        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100" [hidingPriority]="5">
+                        <dxi-column caption="سال مالی" dataField="fiscalYear" dataType="string" [hidingPriority]="8">
+                        </dxi-column>
+                        <dxi-column caption="دوره مالی" dataField="fiscalPeriod" dataType="string" [hidingPriority]="7">
+                        </dxi-column>
+                        <!-- 
+                        <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string" [hidingPriority]="0">
+                        </dxi-column>                         
+                        -->
+                        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100" [hidingPriority]="4">
                         </dxi-column>                                  
-                        <dxi-column caption="ناظر" dataField="validator" dataType="string" [hidingPriority]="3">
+                        <dxi-column caption="ناظر" dataField="validator" dataType="string" [hidingPriority]="0">
                         </dxi-column>     
-                        <dxi-column caption="پیوست به" dataField="correctiveCode" dataType="string" [hidingPriority]="4">
+                        <dxi-column caption="پیوست به" dataField="correctiveCode" dataType="string" [hidingPriority]="1">
                         </dxi-column>
-                        <dxi-column caption="وضعیت" dataField="status" width="100" cellTemplate="diffCellTemplate" [hidingPriority]="7"></dxi-column>                                                
+                        <dxi-column caption="وضعیت" dataField="status" width="100" cellTemplate="diffCellTemplate" [hidingPriority]="6"></dxi-column>                                                
 
                         <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior" [hidingPriority]="2"></dxi-column>
 
@@ -127,7 +133,7 @@
 </div>
 
 <dx-popup 
-    width="90%" [height]="600" 
+    width="90%" [height]="690" 
     [(visible)]="popupVisible" [showTitle]="false" 
     [closeOnOutsideClick]="!records.length" [rtlEnabled]="true">
   <div *dxTemplate="let data of 'content'">

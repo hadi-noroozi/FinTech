@@ -13,6 +13,8 @@ export class FormList {
   description: String;
   comment: String;
   address: String;
+  fiscalPeriod: String;
+  fiscalYear: String;
 }
 
 const formList: FormList[] = [
@@ -27,9 +29,11 @@ const formList: FormList[] = [
     status: "در انتظار تایید",
     description: "توضیحات یک",
     comment: "نظر یک",
-    address: "./assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
+    address: "../../../assets/sample-file/sample1.xlsx",
+    fiscalPeriod: "سالانه",
+    fiscalYear: "1400"
   }, {
-    id: '1546411456',
+    id: '1546411457',
     title: 'خسارت معوقه قبولی اصلاحی سال 1400',
     category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/09/25"),
@@ -39,7 +43,9 @@ const formList: FormList[] = [
     status: "تایید شده",
     description: "توضیحات دو",
     comment: "نظر دو",
-    address: "./assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
+    address: "../../../assets/sample-file/sample1.xlsx",
+    fiscalPeriod: "نیمه اول سال",
+    fiscalYear: "1400"
   }, {
     id: '5442111456',
     correctiveCode: '1546411456',
@@ -52,7 +58,9 @@ const formList: FormList[] = [
     status: "تایید شده",
     description: "توضیحات سه",
     comment: "نظر سه",
-    address: "./assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
+    address: "../../../assets/sample-file/sample1.xlsx",
+    fiscalPeriod: "فصل بهار",
+    fiscalYear: "1400"
   }, {
     id: '1546411456',
     title: 'خسارت معوقه قبولی اصلاحی سال 1400',
@@ -64,7 +72,9 @@ const formList: FormList[] = [
     status: "نیازمند ویرایش",
     description: "توضیحات چهار",
     comment: "نظر چهار",
-    address: "./assets/sample-file/نمونه جدول خسارت معوق قبولی اتکایی.xlsx"
+    address: "../../../assets/sample-file/sample1.xlsx",
+    fiscalPeriod: "فصل بهار",
+    fiscalYear: "1400"
   },
 ]
 

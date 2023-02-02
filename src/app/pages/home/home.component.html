@@ -4,25 +4,25 @@
     <div class="col-lg-3 col-md-6 px-md-2 px-0">
       <div class="dx-card p-3 mb-3 wide-card rounded-lg text-primary">
         <p class="font-sm">فرم های در انتظار تایید ناظر</p>
-        <h5>{{256}}</h5>
+        <h5>{{notCheckedForms}}</h5>
       </div> 
     </div>
     <div class="col-lg-3 col-md-6 px-md-2 px-0">
       <div class="dx-card p-3 mb-3 wide-card rounded-lg text-success">
         <p>فرم های تایید شده ناظر</p>
-        <h5>{{216}}</h5>
+        <h5>{{validateForms}}</h5>
       </div> 
     </div>
     <div class="col-lg-3 col-md-6 px-md-2 px-0 ">
       <div class="dx-card p-3 mb-3 wide-card rounded-lg text-danger">
         <p>فرم در انتظار ویرایش</p>
-        <h5>{{25}}</h5>
+        <h5>{{notValidateForms}}</h5>
       </div> 
     </div>
     <div class="col-lg-3 col-md-6 px-md-2 px-0">
       <div class="dx-card p-3 mb-3 wide-card rounded-lg text-info">
         <p>فرم های الصاقی</p>
-        <h5>{{465}}</h5>
+        <h5>{{allForms}}</h5>
       </div> 
     </div>
     <div class="col-12 px-0">
@@ -42,22 +42,28 @@
         <dxo-filter-row [visible]="false"></dxo-filter-row>
       
         
-        <dxi-column caption="#" dataField="id" dataType="string" [hidingPriority]="0">
+        <dxi-column caption="#" dataField="id" dataType="string" [hidingPriority]="1">
         </dxi-column>
-        <dxi-column caption="عنوان فرم" dataField="title" dataType="string" [hidingPriority]="8">
+        <dxi-column caption="عنوان فرم" dataField="title" dataType="string" [hidingPriority]="9">
         </dxi-column>
-        <dxi-column caption="دسته بندی" dataField="category" dataType="string" [hidingPriority]="6">
+        <dxi-column caption="دسته بندی" dataField="category" dataType="string" [hidingPriority]="7">
         </dxi-column>
-        <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string" [hidingPriority]="1">
+        <dxi-column caption="سال مالی" dataField="fiscalYear" dataType="string" [hidingPriority]="6">
+        </dxi-column>
+        <dxi-column caption="دوره مالی" dataField="fiscalPeriod" dataType="string" [hidingPriority]="5">
+        </dxi-column>         
+        <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string" [hidingPriority]="2">
         </dxi-column>                        
-        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100" [hidingPriority]="5">
+        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100" [hidingPriority]="4">
         </dxi-column>                                  
+        <!-- 
         <dxi-column caption="ناظر" dataField="validator" dataType="string" [hidingPriority]="3">
-        </dxi-column>     
-        <dxi-column caption="پیوست به" dataField="correctiveCode" dataType="string" [hidingPriority]="4">
+        </dxi-column>      
+        -->
+        <dxi-column caption="پیوست به" dataField="correctiveCode" dataType="string" [hidingPriority]="0">
         </dxi-column>  
-        <dxi-column caption=" " dataField="status" cellTemplate="diffCellTemplate" [hidingPriority]="7"></dxi-column>
-        <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior" [hidingPriority]="0"></dxi-column>
+        <dxi-column caption=" " dataField="status" cellTemplate="diffCellTemplate" [hidingPriority]="8"></dxi-column>
+        <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior" [hidingPriority]="3"></dxi-column>
         
         <div *dxTemplate="let d of 'diffCellTemplate'">
           <div class="item" *ngIf="d.value == 'در انتظار تایید'">
@@ -78,7 +84,7 @@
                   stylingMode="text"
                   type="success"
                   id="description"
-                  [visisble] = "d.value[1] == 'در انتظار تایید'"
+                  [visible] = "d.value[1] == 'در انتظار تایید'"
                   class="ml-1">
               </dx-button> 
               <dx-button 
@@ -86,7 +92,7 @@
                   stylingMode="text"
                   type="danger"
                   id="description"
-                  [visisble] = "d.value[1] == 'در انتظار تایید'"
+                  [visible] = "d.value[1] == 'در انتظار تایید'"
                   class="ml-1">
               </dx-button>                                                                                
               <dx-button 
@@ -104,7 +110,7 @@
                   class="ml-1">
               </dx-button>
               <dx-button 
-                  [routerLink]="d.value[2]"
+                  (onClick)="goToLink(d.value[2])"
                   icon="download" 
                   stylingMode="text" 
                   type="danger"
@@ -153,7 +159,7 @@
     <div *dxTemplate="let data of 'content'">
         <dx-scroll-view width="100%" height="100%">
             <p class="text-right p-3">
-                {{popup2Content || 'نظری ثبت نشده است'}}
+                {{ popup2Content || "نظری ثبت نشده است"}}
             </p>
         </dx-scroll-view>
 

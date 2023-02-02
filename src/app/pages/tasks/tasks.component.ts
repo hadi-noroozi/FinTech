@@ -37,4 +37,8 @@ export class TasksComponent {
     this.popup2Content = this.dataSource.filter(item => item.id == id )[0].description;
     this.popupVisible2 = true;
   }
+
+  goToLink(url: string){
+    window.open(url, "_blank");
+  }
 }
