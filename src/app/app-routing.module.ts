@@ -30,22 +30,34 @@ const routes: Routes =  [
   {
     path: 'addform',
     component: AddtransactionComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      role: 'user'
+    }
   },
   {
     path: 'tasks',
     component: TasksComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      role: 'admin'
+    }
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      role: ['admin', 'user']
+    }
   },
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      role: 'admin'
+    }
   },
   {
     path: 'login-form',

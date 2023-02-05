@@ -23,13 +23,13 @@ export const navigation = [
 
 export const navigation2 = [
   {
+    text: 'الصاق فرم',
+    path: '/addform',
+    icon: 'plus'
+  },
+  {
     text: 'حساب کاربری',
     icon: 'user',
     path: '/profile'
   },
-  {
-    text: 'الصاق فرم',
-    path: '/pages/addtransaction',
-    icon: 'plus'
-  }
 ]

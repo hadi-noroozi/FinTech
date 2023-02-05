@@ -11,6 +11,7 @@ const defaultUser = {
   name: "علیرضا عمرانی",
   Position: 'کارشناس',
   PositionId: 2,
+  role: 'user',
   BirthDate: new Date('1974/11/15').toLocaleString('fa-IR').split("،")[0],
   HireDate: new Date('2005/05/11').toLocaleString('fa-IR').split("،")[0],
   /* tslint:disable-next-line:max-line-length */
@@ -28,6 +29,7 @@ const adminUser = {
   name: "نسترن کلاهچی",
   Position: 'ناظر',
   PositionId: 1,
+  role: 'admin',
   BirthDate: new Date('1974/11/15').toLocaleString('fa-IR').split("،")[0],
   HireDate: new Date('2005/05/11').toLocaleString('fa-IR').split("،")[0],
   /* tslint:disable-next-line:max-line-length */
@@ -41,7 +43,15 @@ export class AuthService {
   //private _user = defaultUser;
   private _user;
   get loggedIn(): boolean {
+    if(localStorage.getItem('STATE')) {
+      this._user = JSON.parse(localStorage.getItem('USER'));
+    }
+    
     return !!this._user;
+  }
+
+  get role(): string {
+    return JSON.parse(localStorage.getItem('USER')).role;
   }
 
   private _lastAuthenticatedPath: string = defaultPath;
@@ -65,6 +75,8 @@ export class AuthService {
       if(email == defaultUser.email && password == 'Aa123!@#') {
         this._user = { ...defaultUser, email };
         this.router.navigate(['addform']);
+        localStorage.setItem('STATE', 'true');
+        localStorage.setItem('USER', JSON.stringify(this._user));
         return {
           isOk: true,
           data: this._user
@@ -72,6 +84,8 @@ export class AuthService {
       } else if(email == adminUser.email && password == 'Aa12#$') {
         this._user = { ...adminUser, email };
         this.router.navigate([this._lastAuthenticatedPath]);
+        localStorage.setItem('STATE', 'true');
+        localStorage.setItem('USER', JSON.stringify(this._user));
         return {
           isOk: true,
           data: this._user
@@ -168,8 +182,12 @@ export class AuthService {
 
   async logOut() {
     this._user = null;
+    localStorage.setItem('STATE', 'false');
+    localStorage.setItem('USER',null);
+    localStorage.clear();
     this.router.navigate(['/login-form']);
   }
+
 }
 
 @Injectable()
@@ -182,7 +200,9 @@ export class AuthGuardService implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
+    const role = route.data.role;
     const isLoggedIn = this.authService.loggedIn;
+
     const isAuthForm = [
       'login-form',
       'reset-password',
@@ -201,6 +221,18 @@ export class AuthGuardService implements CanActivate {
     }
 
     if (isLoggedIn) {
+      const roleUser = this.authService.role;
+
+      if (role && role.indexOf(roleUser) === -1 && roleUser=="user") {
+        this.router.navigate(['/addform']);
+        return false;
+      }
+
+      if (role && role.indexOf(roleUser) === -1 && roleUser=="admin") {
+        this.router.navigate(['/home']);
+        return false;
+      }
+
       this.authService.lastAuthenticatedPath = route.routeConfig.path;
     }
 
