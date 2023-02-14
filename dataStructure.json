@@ -1,0 +1,126 @@
+{
+    "user":{
+        "title":"مشخصات کاربر",
+        "usecase as": "object", 
+        "request type": "select, insert(phase 2), update(phase 2)",
+        "description": 
+        "در فاز اول کافی است از کاربر رایانامه و گذرواژه را دریافت می کند و  پس از آن در پاسخ structure درخواستی را  به کاربر ارائه دهد",
+        "structure": {
+            "ID": "شناسه کاربری - عدد",
+            "email": "آدرس رایانامه - رشته",
+            "avatarUrl": "آدرس آواتار - رشته",
+            "FirstName": "نام - رشته",
+            "LastName": "نام خانوادگی - رشته",
+            "name": "نام و نام خانوادگی - رشته",
+            "Position": "موقعیت شغلی - رشته",
+            "PositionId": "شناسه موقعیت -  عدد",
+            "role": "نقش - رشته - دو مقدار user , admin رو میگیره",
+            "BirthDate": "تاریخ تولد - رشته - تاریخ شمسی",
+            "HireDate": "تاریخ ایجاد حساب - رشته - تاریخ شمسی",
+            "Notes": "عنوان شغلی",
+            "categoryCode": "نوع فرم - عدد - درحال حاضر 1و2و3",
+            "validatorId": "شناسه ناظر - عدد - شناسه کاربری ناظر مربوطه"
+        } 
+    },
+    "form_General_Information":{ 
+        "title":"مشخصات کلی فرم",
+        "usecase as": "list, object", 
+        "request type": "select, insert, update",
+        "description": "دریافت فهرست فرم ها با انواع فیلترها به ویژه فیلتر ویرایشگر، فیلتر وضعیت، فیلتر ناظر، فیلتر نوع فرم، در ادامه ارسال مشخصات تک فرم کلی یا بروزرسانی هر یک از پارامترهایش",
+        "structure": {
+            "id": "شناسه فرم - رشته",
+            "title": "عنوان فرم - رشته",
+            "category": "نوع فرم - رشته",
+            "creatingDate": "تاریخ ایجاد فرم - رشته - تاریخ شمسی",
+            "editor": "نام ویرایشگر - رشته",
+            "lastEditDate": "تاریخ آخرین ویرایش - رشته - تاریخ شمسی",
+            "validator": "نام ناظر - رشته",
+            "status": "وضعیت - رشته",
+            "description": "توضیحات - رشته",
+            "comment": "نظر - رشته",
+            "address": "آدرس فرم نسخه اکسل - رشته",
+            "fiscalPeriod": "دوره مالی - رشته",
+            "fiscalYear": "سال مالی - رشته"
+        } 
+    },
+    "form_Categories": {
+        "title":"دسته بندی فرم ها",
+        "usecase as": "list", 
+        "request type": "select",
+        "description": "دریافت انواع دسته بندی موجود برلای فرم ها",
+        "structure": {
+            "id": "شناسه نوع فرم - عدد",
+            "title": "عنوان نوع فرم - رشته",
+            "sample": "آدرس نمونه فرم اکسل _  رشته"
+        }
+    },
+    "validators": {
+        "title":"فهرست ناظران",
+        "usecase as": "list", 
+        "request type": "select",
+        "description": "دریافت فهرست ناظرات به ساختار جزئیات زیر",
+        "structure": {
+            "id": "شناسه کاربر - عدد",
+            "name": "نام و نام خانوادگی کاربر - رشته"
+        }
+    },
+    "form1_type": {
+        "title":"خسارت معوقه قبولی اتکایی",
+        "usecase as": "list",
+        "request type": "select, insert, update",
+        "description": "",
+        "structure": {
+            "formId": "شناسه فرم مربوطه - عدد",
+            "data": [
+                {
+                    "id": "شناسه مشاهده - عدد",
+                    "field": "رشته - رشته",
+                    "deferredLossOfCompanyShare": "100% خسارت معوق سهم شرکت - عدد",
+                    "deferredDamagesShareOfInsurer": "خسارت معوق سهم بیمه گران اتکایی - عدد",
+                    "netBalanceOfCompanyShare": "مانده خالص سهم شرکت - عدد",
+                    "currency": "واحد ارز - رشته"
+                }
+            ]
+
+        }
+    },
+    "form2_type": {
+        "title":"ذخیره ریاضی سال جاری",
+        "usecase as": "list",
+        "request type": "select, insert, update",
+        "description": "",
+        "structure": {
+            "maintenanceShare": "سهم نگهداری - عدد",
+            "reinsuranceShare": "سهم اتکایی - عدد",
+            "total": "کل - عدد" 
+        }
+    },
+    "form3_type": {
+        "title":"خسارات معوقه بیمه نامه ها",
+        "usecase as": "list",
+        "request type": "select, insert, update",
+        "description": "",
+        "structure": {
+            "field": "رشته - رشته",
+            "subfield": "زیررشته - رشته" ,
+            "issueYear": "سال صدور - رشته" ,
+            "currency": "واحد ارز - رشته",
+            "shareOfDeferredLossOfCompany": "خسارت معوق سهم بیمه ایران - عدد" ,  
+            "mandatoryReinsurersShare": "اجباری بیمه گران اتکایی - عدد" ,
+            "optionalReinsurersShare": "اختیاری بیمه گران اتکایی - عدد" ,
+            "contractualReinsurersShare":  "قراردادی بیمه گران اتکایی - عدد" ,
+            "totalReinsurersShare": "مجموع سهم بیمه گران اتکایی - عدد" ,
+            "netDeferredLossOfCompanyShare": "سهم خالص بیمه ایران - عدد"
+        }
+    },
+    "upload_Excel_File": {
+        "title": "آپلود فایل های اکسل",
+        "request type": "select, insert, update",
+        "usecase as": "multipart",
+        "response": {
+            "id":"شناسه فرم - رشته",
+            "address": "آدرس فرم نسخه اکسل - رشته"
+        }
+    }
+
+}

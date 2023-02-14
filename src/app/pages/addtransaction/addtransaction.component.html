@@ -33,7 +33,7 @@
                 <div class="col-12 iranyekan px-0">
                     <dx-data-grid 
                         id="gridContainer" 
-                        height="71vh"
+                        height="69vh"
                         [dataSource]="dataSource" 
                         keyExpr="id"
                         [hoverStateEnabled]="true"
@@ -60,16 +60,22 @@
                         </dxi-column>
                         <dxi-column caption="دوره مالی" dataField="fiscalPeriod" dataType="string" [hidingPriority]="7">
                         </dxi-column>
+
                         <!-- 
                         <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string" [hidingPriority]="0">
                         </dxi-column>                         
                         -->
+                        
                         <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100" [hidingPriority]="4">
                         </dxi-column>                                  
-                        <dxi-column caption="ناظر" dataField="validator" dataType="string" [hidingPriority]="0">
-                        </dxi-column>     
+                        <dxi-column caption="ناظر" dataField="validator" dataType="string" [hidingPriority]="1">
+                        </dxi-column> 
+
+                        <!-- 
                         <dxi-column caption="پیوست به" dataField="correctiveCode" dataType="string" [hidingPriority]="1">
-                        </dxi-column>
+                        </dxi-column> 
+                        -->
+
                         <dxi-column caption="وضعیت" dataField="status" width="100" cellTemplate="diffCellTemplate" [hidingPriority]="6"></dxi-column>                                                
 
                         <dxi-column caption="" cellTemplate="diffCellTemplate2" [calculateCellValue]="buttonsValidatior" [hidingPriority]="2"></dxi-column>
@@ -107,7 +113,7 @@
                                 </dx-button>    
                                 <dx-button 
                                     icon="upload" 
-                                    [disabled] = "d.value[1] != 'نیازمند ویرایش'"
+                                    [disabled] = "d.value[1] == 'تایید شده'"
                                     stylingMode="text" 
                                     type="default"
                                     class="ml-1"
@@ -149,7 +155,7 @@
                     <div class="col-12 text-right px-3 " [hidden]="!correctiveId">
                         <p class="pb-0 mb-0">
                             نسخه اصلاحیه
-                            پیوست به فرم {{correctiveId}}
+                            فرم {{correctiveId}}
                         <p>
                     </div>
                     <div class="col-12 text-center" [hidden]="!(records.length == 0)">

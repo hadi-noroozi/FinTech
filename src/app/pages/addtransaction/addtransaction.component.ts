@@ -81,6 +81,7 @@ export class AddtransactionComponent implements OnInit {
   public formItem: any[];
 
   formType: String;
+  fiscalYearList: any[];
 
   constructor(
     addTransactionService: AddtransactionService,
@@ -94,6 +95,14 @@ export class AddtransactionComponent implements OnInit {
     this.slectedCategroy = this.categories.filter(item => item.id == this.user.categoryCode)[0];
     this.dataSource = addTransactionService.getFormListData();
     this.longtabs = addTransactionService.getLongtabs();
+
+    this.fiscalYearList = [
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]),
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 1,
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 2,
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 3,
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 4
+    ];
     // this.user = {
     //   id: 15200144,
     //   name: "علیرضا عمرانی",
@@ -101,6 +110,7 @@ export class AddtransactionComponent implements OnInit {
     //   categoryCode: 1,
     //   validatorId: 1
     // };
+
     this.colCountByScreen = {
       xs: 1,
       sm: 1,
@@ -207,8 +217,9 @@ export class AddtransactionComponent implements OnInit {
       },
       {
         dataField: 'fiscalYear',
-        editorType: 'dxTextBox',
+        editorType: "dxSelectBox",
         editorOptions: {
+          dataSource: this.fiscalYearList,
           maxLength: 200,
           placeholder:"سال مالی را وارد کنید",
           stylingMode: 'filled',
@@ -222,8 +233,22 @@ export class AddtransactionComponent implements OnInit {
       },  
       {
         dataField: 'fiscalPeriod',
-        editorType: 'dxTextBox',
+        editorType: "dxSelectBox",
         editorOptions: {
+          dataSource: [
+            "فروردین",
+            "اردیبهشت",
+            "خرداد",
+            "تیر",
+            "مرداد",
+            "تابستان",
+            "مهر",
+            "آبان",
+            "آذر",
+            "دی",
+            "بهمن",
+            "اسفند",
+          ],
           maxLength: 200,
           placeholder:"دوره مالی را وارد کنید",
           stylingMode: 'filled',
@@ -390,7 +415,7 @@ export class AddtransactionComponent implements OnInit {
 
         data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
   
-        console.log(data);
+        //console.log(data);
       }
 
       for (const [key, value] of Object.entries(data[0])) {
