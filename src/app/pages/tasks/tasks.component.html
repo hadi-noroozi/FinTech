@@ -95,12 +95,12 @@
             icon="fullscreen" 
             stylingMode="text" 
             type="normal"
-            class="ml-1">
+            class="ml-1"                  
+            (onClick)="getData(d)">
         </dx-button>
     </div>
   </div>
 </dx-data-grid>
-
 
 <dx-popup
     [maxWidth]="400"
@@ -120,5 +120,113 @@
             </p>
         </dx-scroll-view>
 
+    </div>
+</dx-popup>
+
+<dx-popup
+    width="90%" [height]="670"
+    [showTitle]="true"
+    [title]="popupInfoTitle"
+    [dragEnabled]="false"
+    [showCloseButton]="true"
+    [rtlEnabled] = "true"
+    [(visible)]="popupVisibleInfo"
+>
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+            
+            <div class="container-fluid ">
+                <div class="row">
+                    
+                    <div class="col-12">
+                        <h2 class="content-block iranyekan text-right mx-3 ">مشخصات فرم</h2>
+                        <dx-form id="form"
+                            [formData]="popupInfo"
+                            [items]="formItem2"
+                            labelMode="floating"
+                            [rtlEnabled]="true"
+                            [colCountByScreen]="colCountByScreen"
+                        >
+                        </dx-form>
+                    </div>
+                    <div class="col-12 px-0">
+                        <h2 class="content-block iranyekan text-right mx-3 px-3">اطلاعات فرم</h2>
+                        <dx-data-grid 
+                        id="gridContainer3" 
+                        [dataSource]="popupInfoFormData" 
+                        [hoverStateEnabled]="true"
+                        [rowAlternationEnabled]="true"
+                        [showColumnLines]="false"
+                        [showRowLines]="false"
+                        [autoNavigateToFocusedRow]="true"
+                        [allowColumnReordering]="true"
+                        [allowColumnResizing]="true"
+                        [columnAutoWidth]="true"
+                        [showBorders]="false"
+                        [rtlEnabled]="true"
+                        
+                        [remoteOperations]="true">
+
+                        <dxi-column
+                            *ngFor="let item of arrayKey2"
+                            [dataField]="item.key" 
+                            [dataType]="item.type" 
+                            [caption]="
+                            (item.key == 'field') ? 'رشته' :
+                            (item.key == 'deferredLossOfCompanyShare') ? '100% خسارت معوق سهم شرکت ' :
+                            (item.key == 'deferredDamagesShareOfInsurer') ? 'خسارت معوق سهم بیمه گران اتکایی' :  
+                            (item.key == 'netBalanceOfCompanyShare') ? 'مانده خالص سهم شرکت' :
+                            (item.key == 'currency') ? 'واحد ارز' :
+                            
+                            (item.key == 'maintenanceShare') ? 'سهم نگهداری ' :
+                            (item.key == 'reinsuranceShare') ? 'سهم اتکایی' :  
+                            (item.key == 'total') ? 'کل' : 
+                            
+                            (item.key == 'subfield') ? 'زیررشته' :
+                            (item.key == 'issueYear') ? 'سال صدور' :
+                            (item.key == 'shareOfDeferredLossOfCompany') ? 'خسارت معوق سهم بیمه ایران' :  
+                            (item.key == 'mandatoryReinsurersShare') ? 'اجباری بیمه گران اتکایی' :
+                            (item.key == 'optionalReinsurersShare') ? 'اختیاری بیمه گران اتکایی' :
+                            (item.key == 'contractualReinsurersShare') ?  'قراردادی بیمه گران اتکایی' :
+                            (item.key == 'totalReinsurersShare') ? 'مجموع سهم بیمه گران اتکایی' :
+                            (item.key == 'netDeferredLossOfCompanyShare') ? 'سهم خالص بیمه ایران' : ''              
+                            ">
+                            <dxo-format 
+                                type="fixedPoint" 
+                                *ngIf="
+                                (item.key == 'deferredLossOfCompanyShare') ||
+                                (item.key == 'deferredDamagesShareOfInsurer') ||
+                                (item.key == 'netBalanceOfCompanyShare') ||
+
+                                (item.key == 'maintenanceShare') ||
+                                (item.key == 'reinsuranceShare') ||
+                                (item.key == 'total') ||
+
+                                (item.key == 'shareOfDeferredLossOfCompany') ||
+                                (item.key == 'mandatoryReinsurersShare') ||
+                                (item.key == 'optionalReinsurersShare') ||
+                                (item.key == 'contractualReinsurersShare') ||
+                                (item.key == 'totalReinsurersShare') ||
+                                (item.key == 'netDeferredLossOfCompanyShare')    
+                                ">
+                            </dxo-format>
+                        </dxi-column> 
+
+                        <dxo-paging [enabled]="false"></dxo-paging>
+                        <dxo-editing
+                          mode="batch"
+                          [allowUpdating]="false"
+                          [allowAdding]="false"
+                          [allowDeleting]="false"
+                          [selectTextOnEditStart]="selectTextOnEditStart"
+                          [startEditAction]="startEditAction"
+                        >
+                        </dxo-editing>
+
+                      </dx-data-grid>                        
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
     </div>
 </dx-popup>

@@ -22,13 +22,18 @@ if (!/localhost/.test(document.location.host)) {
 })
 export class AddtransactionComponent implements OnInit {
 
-
   dataSource: FormList[];
 
   popupVisible = false;
   popupVisible2 = false;
+  popupVisibleInfo = false;
+  popupInfoTitle: string;
   popup2Title: String;
   popup2Content: String;
+  popupInfo: any;
+  popupInfoFormData: any[];
+  arrayKey2: any[] = [];
+  formItem2: any[];
 
   correctiveId: String;
 
@@ -84,8 +89,8 @@ export class AddtransactionComponent implements OnInit {
   fiscalYearList: any[];
 
   constructor(
-    addTransactionService: AddtransactionService,
-    authService: AuthService,
+    private addTransactionService: AddtransactionService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.userInfo = authService.getUser();
@@ -241,7 +246,7 @@ export class AddtransactionComponent implements OnInit {
             "خرداد",
             "تیر",
             "مرداد",
-            "تابستان",
+            "شهریور",
             "مهر",
             "آبان",
             "آذر",
@@ -368,7 +373,7 @@ export class AddtransactionComponent implements OnInit {
   
         data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
   
-        //console.log(data);
+        console.log(data);
 
       } else if(this.user.categoryCode == 2) {
 
@@ -546,6 +551,154 @@ export class AddtransactionComponent implements OnInit {
     this.popup2Title = "نظر ناظر | " + this.dataSource.filter(item => item.id == id )[0].title;
     this.popup2Content = this.dataSource.filter(item => item.id == id )[0].comment;
     this.popupVisible2 = true;
+  }
+
+  getData(rowData) {
+    this.arrayKey2 = [];
+    this.popupVisibleInfo = true;
+    this.popupInfo = rowData.data;
+    this.popupInfoTitle = "فرم " + rowData.data.title;
+
+    this.formItem2 = [
+      {
+        dataField: 'id',
+        editorType: "dxTextBox",
+        editorOptions: {
+          readOnly: true,
+          stylingMode: 'filled'
+        },
+        label: {
+          text: "کد فرم",
+        }
+      },
+      {
+        dataField: 'title',
+        editorType: "dxTextBox",
+        colSpan: 2,
+        editorOptions: {
+          readOnly: true,
+          stylingMode: 'filled',
+        },
+        label: {
+          text: "عنوان فرم",
+        }
+      },
+      {
+        dataField: 'category',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.categories,
+          stylingMode: 'filled',
+          displayExpr:"title",
+          valueExpr:"title",
+          readOnly: true,
+          placeholder:"نوع فرم را تعیین کنید",
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,catgory: data.value};
+          },
+        },
+        label: {
+          text: "دسته بندی",
+        }
+      },
+      {
+        dataField: 'creatingDate',
+        editorType: "dxDateBox",
+        editorOptions: {
+          readOnly: true,
+          stylingMode: 'filled',
+          displayFormat:'yyyy/MM/dd',
+
+        },
+        label: {
+          text: "تاریخ ایجاد",
+        }
+      },
+      {
+        dataField: 'editor',
+        editorType: "dxTextBox",
+        editorOptions: {
+          readOnly: true,
+          stylingMode: 'filled',
+        },
+        label: {
+          text: "ویرایش کننده",
+        }
+      },
+      {
+        dataField: 'validator',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.validators,
+          displayExpr:"name",
+          valueExpr:"name",
+          placeholder:"کاربر ناظر را تعیین کنید",
+          stylingMode: 'filled',
+          readOnly: true,
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,validator: data.value};
+          },
+        },
+        label: {
+          text: "ناظر",
+        }
+      },
+      {
+        dataField: 'fiscalYear',
+        editorType: "dxTextBox",
+        editorOptions: {
+          maxLength: 200,
+          readOnly: true,
+          placeholder:"سال مالی را وارد کنید",
+          stylingMode: 'filled',
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,fiscalYear: data.value};
+          },
+        },
+        label: {
+          text: "سال مالی",
+        }
+      },  
+      {
+        dataField: 'fiscalPeriod',
+        editorType: "dxTextBox",
+        editorOptions: {
+          maxLength: 200,
+          placeholder:"دوره مالی را وارد کنید",
+          readOnly: true,
+          stylingMode: 'filled',
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,fiscalPeriod: data.value};
+          },
+        },
+        label: {
+          text: "دوره مالی",
+        }
+      },      
+      {
+        dataField: 'description',
+        editorType: 'dxTextBox',
+        colSpan: 2,
+        editorOptions: {
+          maxLength: 200,
+          placeholder:"توضیحات پیوست را وارد کنید",
+          stylingMode: 'filled',
+          readOnly: true,
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,description: data.value};
+          },
+        },
+        label: {
+          text: "توضیحات",
+        }
+      },      
+    ]
+
+    this.popupInfoFormData = this.addTransactionService.getFormInfo();
+    for (const [key, value] of Object.entries(this.popupInfoFormData[0])) {
+      this.arrayKey2.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
+    }    
+    //console.log(this.popupInfo,this.popupInfoFormData);
   }
 }
 

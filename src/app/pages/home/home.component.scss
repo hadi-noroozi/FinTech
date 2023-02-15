@@ -45,3 +45,43 @@
 ::ng-deep * {
   font-family: iranyekan;
 }
+
+.text-right {
+  text-align: right;
+}
+
+.content-block {
+  font-size: 1rem !important;
+}
+
+::ng-deep * {
+  font-family: iranyekan;
+}
+
+::ng-deep .dx-popup-content {
+  padding: 0;
+}
+
+
+::ng-deep .dx-texteditor-input {
+  font-family: 'iranyekan' !important;
+}
+
+::ng-deep .dx-field-item-label.dx-field-item-label-location-top {
+  text-align: right !important;
+}
+
+::ng-deep .dx-toolbar-label {
+  font-size: 1.1rem !important;
+}
+
+::ng-deep .btn-box .dx-button.dx-button-default {
+  border-radius: 0;
+  box-shadow: none;
+  height: 50px;
+  width: 180px;
+}
+
+::ng-deep .dx-card {
+  box-shadow: none;
+}
