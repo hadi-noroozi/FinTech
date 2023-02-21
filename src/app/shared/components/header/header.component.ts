@@ -35,7 +35,7 @@ export class HeaderComponent implements OnInit {
   },
   {
     text: 'خروج',
-    icon: 'runner',
+    icon: 'close',
     onClick: () => {
       this.authService.logOut();
     }

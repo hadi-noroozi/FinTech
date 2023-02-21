@@ -42,6 +42,8 @@ const adminUser = {
 export class AuthService {
   //private _user = defaultUser;
   private _user;
+  private resourceUrl = 'https://arz-yab.ir/iic_finance/API/v0.1/controller.php?login';
+
   get loggedIn(): boolean {
     if(localStorage.getItem('STATE')) {
       this._user = JSON.parse(localStorage.getItem('USER'));
@@ -59,7 +61,9 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router
+  ) { }
 
   async logIn(email: string, password: string) {
 
@@ -72,30 +76,63 @@ export class AuthService {
       //   data: this._user
       // };
 
-      if(email == defaultUser.email && password == 'Aa123!@#') {
-        this._user = { ...defaultUser, email };
-        this.router.navigate(['addform']);
-        localStorage.setItem('STATE', 'true');
-        localStorage.setItem('USER', JSON.stringify(this._user));
-        return {
-          isOk: true,
-          data: this._user
-        };
-      } else if(email == adminUser.email && password == 'Aa12#$') {
-        this._user = { ...adminUser, email };
-        this.router.navigate([this._lastAuthenticatedPath]);
-        localStorage.setItem('STATE', 'true');
-        localStorage.setItem('USER', JSON.stringify(this._user));
-        return {
-          isOk: true,
-          data: this._user
-        };
-      } else {
-        return {
-          isOk: false,
-          message: "حساب کاربری یا گذرواژه صحیح نمی باشد"
-        };
+      const body = {
+        'username': email,
+        'password': password
       }
+      const config = {
+          method: 'POST',
+          body: this.getFormData(body)
+      }
+      let result;
+      const response = await fetch(this.resourceUrl, config)
+                        .then((response) => response.json())
+                        .then((res) => {
+                          if(res.status == 200) {
+                            this._user = res.data;
+                            const routePath = (res.data.role == "user") ? 'addform' : this._lastAuthenticatedPath;
+                            this.router.navigate([routePath]);
+                            localStorage.setItem('STATE', 'true');
+                            localStorage.setItem('USER', JSON.stringify(this._user));
+                            result = {
+                              isOk: true,
+                              data: this._user
+                            };
+                            
+                          } else {
+                            result = {
+                              isOk: false,
+                              message: "حساب کاربری یا گذرواژه صحیح نمی باشد"
+                            };
+                          }
+                        });
+      
+      return result;
+
+      // if(email == defaultUser.email && password == 'Aa123!@#') {
+      //   this._user = { ...defaultUser, email };
+      //   this.router.navigate(['addform']);
+      //   localStorage.setItem('STATE', 'true');
+      //   localStorage.setItem('USER', JSON.stringify(this._user));
+      //   return {
+      //     isOk: true,
+      //     data: this._user
+      //   };
+      // } else if(email == adminUser.email && password == 'Aa12#$') {
+      //   this._user = { ...adminUser, email };
+      //   this.router.navigate([this._lastAuthenticatedPath]);
+      //   localStorage.setItem('STATE', 'true');
+      //   localStorage.setItem('USER', JSON.stringify(this._user));
+      //   return {
+      //     isOk: true,
+      //     data: this._user
+      //   };
+      // } else {
+      //   return {
+      //     isOk: false,
+      //     message: "حساب کاربری یا گذرواژه صحیح نمی باشد"
+      //   };
+      // }
     }
     catch {
       return {
@@ -186,6 +223,12 @@ export class AuthService {
     localStorage.setItem('USER',null);
     localStorage.clear();
     this.router.navigate(['/login-form']);
+  }
+
+  getFormData(object) {
+    const formData = new FormData();
+    Object.keys(object).forEach(key => formData.append(key, object[key]));
+    return formData;
   }
 
 }

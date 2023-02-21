@@ -75,3 +75,7 @@ input[type="file"].custom {
 ::ng-deep .dx-card {
     box-shadow: none;
 }
+
+::ng-deep .dx-popup-title .dx-toolbar-before * {
+    font-size: 14px !important;
+}

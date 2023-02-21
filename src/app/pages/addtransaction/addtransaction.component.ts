@@ -5,7 +5,9 @@ import { Component, OnInit, enableProdMode } from '@angular/core';
 // import { of } from 'rxjs';
 // import { ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import notify from 'devextreme/ui/notify';
 import * as XLSX from "xlsx";
+
 
 
 import { AddtransactionService, FormList, Longtab } from './addtransaction.service';
@@ -44,35 +46,15 @@ export class AddtransactionComponent implements OnInit {
   public records: any[] = [];
   public headRecords: any[] = [];
   public arrayKey: any[] = [];
+  public file: FileList;
+  public transferingForm: Number;
 
   userInfo: any;
   public user: any;
 
-  public validators: any[] = [
-    {
-      id: 1,
-      name: "نسترن کلاهچی"
-    },{
-      id: 2,
-      name: "علیرضا عمرانی"
-    }
-  ];
+  public validators: any[];
 
-  public categories: any[] = [
-    {
-      id: 1,
-      title: "خسارت معوقه اتکایی",
-      sample: "../../../assets/sample-file/sample1.xlsx"
-    }, {
-      id: 2,
-      title: "ذخیره ریاضی",
-      sample: "../../../assets/sample-file/sample2.xlsx"
-    }, {
-      id: 3,
-      title: "آمار کل اصلاحی",
-      sample: "../../../assets/sample-file/sample3.xlsx"
-    }
-  ];
+  public categories: any[];
   slectedCategroy: any;
 
   btnOne: boolean = true;
@@ -83,6 +65,7 @@ export class AddtransactionComponent implements OnInit {
 
   public colCountByScreen: any;
   public infoForm: any;
+  public formData: any;
   public formItem: any[];
 
   formType: String;
@@ -93,12 +76,10 @@ export class AddtransactionComponent implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
+
     this.userInfo = authService.getUser();
     this.user = this.userInfo.__zone_symbol__value.data;
-    this.formType = (this.user.PositionId==2) ? 
-      this.categories.filter(item => item.id == this.user.categoryCode)[0].title : null;
-    this.slectedCategroy = this.categories.filter(item => item.id == this.user.categoryCode)[0];
-    this.dataSource = addTransactionService.getFormListData();
+
     this.longtabs = addTransactionService.getLongtabs();
 
     this.fiscalYearList = [
@@ -108,13 +89,6 @@ export class AddtransactionComponent implements OnInit {
       parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 3,
       parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 4
     ];
-    // this.user = {
-    //   id: 15200144,
-    //   name: "علیرضا عمرانی",
-    //   role: "ویرایشگر",
-    //   categoryCode: 1,
-    //   validatorId: 1
-    // };
 
     this.colCountByScreen = {
       xs: 1,
@@ -122,170 +96,30 @@ export class AddtransactionComponent implements OnInit {
       md: 2,
       lg: 3
     };
-    this.formItem = [
-      {
-        dataField: 'id',
-        editorType: "dxTextBox",
-        editorOptions: {
-          readOnly: true,
-          stylingMode: 'filled'
-        },
-        label: {
-          text: "کد فرم",
-        }
-      },
-      {
-        dataField: 'title',
-        editorType: "dxTextBox",
-        colSpan: 2,
-        editorOptions: {
-          readOnly: true,
-          stylingMode: 'filled'
-        },
-        label: {
-          text: "عنوان فرم",
-        }
-      },
-      {
-        dataField: 'category',
-        editorType: "dxSelectBox",
-        editorOptions: {
-          dataSource: this.categories,
-          stylingMode: 'filled',
-          displayExpr:"title",
-          valueExpr:"title",
-          readOnly: true,
-          placeholder:"نوع فرم را تعیین کنید",
-          onValueChanged(data) {
-            this.infoForm = {...this.infoForm ,catgory: data.value};
-            // if(
-            //   this.infoForm.validator != undefined && 
-            //   this.infoForm.category != undefined
-            //   ) {
-            //   this.nextBtn = false;
-            // } else {
-            //   this.nextBtn = true;
-            // }
-          },
-        },
-        label: {
-          text: "دسته بندی",
-        }
-      },
-      {
-        dataField: 'creatingDate',
-        editorType: "dxTextBox",
-        editorOptions: {
-          readOnly: true,
-          stylingMode: 'filled',
-        },
-        label: {
-          text: "تاریخ ایجاد",
-        }
-      },
-      {
-        dataField: 'editor',
-        editorType: "dxTextBox",
-        editorOptions: {
-          readOnly: true,
-          stylingMode: 'filled',
-        },
-        label: {
-          text: "ویرایش کننده",
-        }
-      },
-      {
-        dataField: 'validator',
-        editorType: "dxSelectBox",
-        editorOptions: {
-          dataSource: this.validators,
-          displayExpr:"name",
-          valueExpr:"name",
-          placeholder:"کاربر ناظر را تعیین کنید",
-          stylingMode: 'filled',
-          readOnly: true,
-          onValueChanged(data) {
-            this.infoForm = {...this.infoForm ,validator: data.value};
-            // if(
-            //   this.infoForm.validator != undefined && 
-            //   this.infoForm.category != undefined
-            //   ) {
-            //   this.nextBtn = false;
-            // } else {
-            //   this.nextBtn = true;
-            // }
-          },
-        },
-        label: {
-          text: "ناظر",
-        }
-      },
-      {
-        dataField: 'fiscalYear',
-        editorType: "dxSelectBox",
-        editorOptions: {
-          dataSource: this.fiscalYearList,
-          maxLength: 200,
-          placeholder:"سال مالی را وارد کنید",
-          stylingMode: 'filled',
-          onValueChanged(data) {
-            this.infoForm = {...this.infoForm ,fiscalYear: data.value};
-          },
-        },
-        label: {
-          text: "سال مالی",
-        }
-      },  
-      {
-        dataField: 'fiscalPeriod',
-        editorType: "dxSelectBox",
-        editorOptions: {
-          dataSource: [
-            "فروردین",
-            "اردیبهشت",
-            "خرداد",
-            "تیر",
-            "مرداد",
-            "شهریور",
-            "مهر",
-            "آبان",
-            "آذر",
-            "دی",
-            "بهمن",
-            "اسفند",
-          ],
-          maxLength: 200,
-          placeholder:"دوره مالی را وارد کنید",
-          stylingMode: 'filled',
-          onValueChanged(data) {
-            this.infoForm = {...this.infoForm ,fiscalPeriod: data.value};
-          },
-        },
-        label: {
-          text: "دوره مالی",
-        }
-      },      
-      {
-        dataField: 'description',
-        editorType: 'dxTextBox',
-        colSpan: 2,
-        editorOptions: {
-          maxLength: 200,
-          placeholder:"توضیحات پیوست را وارد کنید",
-          stylingMode: 'filled',
-          onValueChanged(data) {
-            this.infoForm = {...this.infoForm ,description: data.value};
-          },
-        },
-        label: {
-          text: "توضیحات",
-        }
-      },      
-    ]
+
   }
 
   ngOnInit() {
-    //console.log(this.user)
+    this.addTransactionService.getCategories().then( res =>{
+      this.categories = res.data;
+      this.formType = (this.user['position_id']==0) ? 
+                        this.categories.filter(item => item.id == this.user.categorycode)[0].title : null;
+      this.slectedCategroy = this.categories.filter(item => item.id == this.user.categorycode)[0];
+    });
+
+    this.addTransactionService.getValidators().then( res => {
+      this.validators = res.data;
+    });
+   
+    let data = {
+      'token': this.user.token
+    }
+    this.addTransactionService.getForms(data).then(res => {
+      if(res.status == 200) {
+        this.dataSource = res.data
+      }
+    });
+
   }
 
   buttonsValidatior(rowData) {
@@ -304,6 +138,7 @@ export class AddtransactionComponent implements OnInit {
     if (target.files.length !== 1) {
       throw new Error('Cannot use multiple files');
     }
+    this.file = event.target.files[0];
     const reader: FileReader = new FileReader();
     reader.readAsBinaryString(target.files[0]);
     reader.onload = (e: any) => {
@@ -315,112 +150,276 @@ export class AddtransactionComponent implements OnInit {
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
-      // const { 
-      //   A1, 
-      //   A2, 
-      //   A3,
-      //   A22,
-      //   A28,
-      //   A32,
-      //   A41,
-      //   A43,
-      //   A44,
-      //   A47,
-      //   A50,
-      //   A57,
-      //   A62,
-      //   A63,
-      //   A64,
-      //   A65, 
-      //   ...wd }  = ws;
+      this.formItem = [
+        // {
+        //   dataField: 'id',
+        //   editorType: "dxTextBox",
+        //   editorOptions: {
+        //     readOnly: true,
+        //     stylingMode: 'filled'
+        //   },
+        //   label: {
+        //     text: "کد فرم",
+        //   }
+        // },
+        {
+          dataField: 'title',
+          editorType: "dxTextBox",
+          colSpan: 2,
+          editorOptions: {
+            readOnly: true,
+            stylingMode: 'filled'
+          },
+          label: {
+            text: "عنوان فرم",
+          }
+        },
+        {
+          dataField: 'category',
+          editorType: "dxSelectBox",
+          editorOptions: {
+            dataSource: this.categories,
+            stylingMode: 'filled',
+            displayExpr:"title",
+            valueExpr:"title",
+            readOnly: true,
+            placeholder:"نوع فرم را تعیین کنید",
+            onValueChanged(data) {
+              this.infoForm = {...this.infoForm ,catgory: data.value};
+              // if(
+              //   this.infoForm.validator != undefined && 
+              //   this.infoForm.category != undefined
+              //   ) {
+              //   this.nextBtn = false;
+              // } else {
+              //   this.nextBtn = true;
+              // }
+            },
+          },
+          label: {
+            text: "دسته بندی",
+          }
+        },
+        {
+          dataField: 'creatingDate',
+          editorType: "dxTextBox",
+          editorOptions: {
+            readOnly: true,
+            stylingMode: 'filled',
+          },
+          label: {
+            text: "تاریخ ایجاد",
+          }
+        },
+        {
+          dataField: 'editor',
+          editorType: "dxTextBox",
+          editorOptions: {
+            readOnly: true,
+            stylingMode: 'filled',
+          },
+          label: {
+            text: "ویرایش کننده",
+          }
+        },
+        {
+          dataField: 'validator',
+          editorType: "dxSelectBox",
+          editorOptions: {
+            dataSource: this.validators,
+            displayExpr:"name",
+            valueExpr:"name",
+            placeholder:"کاربر ناظر را تعیین کنید",
+            stylingMode: 'filled',
+            readOnly: true,
+            onValueChanged(data) {
+              this.infoForm = {...this.infoForm ,validator: data.value};
+              // if(
+              //   this.infoForm.validator != undefined && 
+              //   this.infoForm.category != undefined
+              //   ) {
+              //   this.nextBtn = false;
+              // } else {
+              //   this.nextBtn = true;
+              // }
+            },
+          },
+          label: {
+            text: "ناظر",
+          }
+        },
+        {
+          dataField: 'fiscalYear',
+          editorType: "dxSelectBox",
+          editorOptions: {
+            dataSource: this.fiscalYearList,
+            maxLength: 200,
+            placeholder:"سال مالی را وارد کنید",
+            stylingMode: 'filled',
+            onValueChanged(data) {
+              this.infoForm = {...this.infoForm ,fiscalYear: data.value};
+            },
+          },
+          label: {
+            text: "سال مالی",
+          }
+        },  
+        {
+          dataField: 'fiscalPeriod',
+          editorType: "dxSelectBox",
+          editorOptions: {
+            dataSource: [
+              "فروردین",
+              "اردیبهشت",
+              "خرداد",
+              "تیر",
+              "مرداد",
+              "شهریور",
+              "مهر",
+              "آبان",
+              "آذر",
+              "دی",
+              "بهمن",
+              "اسفند",
+            ],
+            maxLength: 200,
+            placeholder:"دوره مالی را وارد کنید",
+            stylingMode: 'filled',
+            onValueChanged(data) {
+              this.infoForm = {...this.infoForm ,fiscalPeriod: data.value};
+              
+            },
+          },
+          label: {
+            text: "دوره مالی",
+          }
+        },      
+        {
+          dataField: 'description',
+          editorType: 'dxTextBox',
+          colSpan: 2,
+          editorOptions: {
+            maxLength: 200,
+            placeholder:"توضیحات پیوست را وارد کنید",
+            stylingMode: 'filled',
+            onValueChanged(data) {
+              this.infoForm = {...this.infoForm ,description: data.value};
+             
+            },
+          },
+          label: {
+            text: "توضیحات",
+          }
+        },      
+      ];
 
       this.infoForm = {
-        id: Math.floor(Math.random() * 10000000000) + 1,
+        // id: Math.floor(Math.random() * 10000000000) + 1,
         title: ws.A1.h,
         creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
         editor: this.user.name,
-        category: this.categories.filter(item => item.id == this.user.categoryCode)[0].title ,
-        validator: this.validators.filter(item => item.id == this.user.validatorId)[0].name ,
-        correctiveCode: this.correctiveId,
-        status: 'در انتظار تایید',
-        comment: null,
-        address: this.slectedCategroy.sample
-      }
+        category: this.categories.filter(item => item.id == this.user.categorycode)[0].title ,
+        validator: this.validators.filter(item => item.id == this.user['validator_id'])[0].name ,
+        // correctiveCode: this.correctiveId,
+        // status: 'در انتظار تایید',
+        // comment: null,
+        // address: this.slectedCategroy.sample
+      };
 
       let data;
 
-      if(this.user.categoryCode == 1) {
+      if(this.user.categorycode == 1) {
   
-        const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
+        if(
+          ws.A2.h == "رشته بيمه اي " &&
+          ws.B2.h == "100%خسارت معوق سهم شركت " &&
+          ws.C2.h == "خسارت معوق سهم بيمه گران اتكايي " &&
+          ws.D2.h == "مانده خالص سهم شرکت" &&
+          ws.E2.h == "واحد ارز "
+        ) {
+          const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
   
-        // for(let i=1; i<dataLength + 1; i++) {
-        //   if (ws[`A${i}`] == undefined) {
-        //     ws[`A${i}`] = ws[`A${i-1}`];
-        //   }
-        // }
-  
-        const { 
-          A1, 
-          // C86,
-          ...wd }  = ws;
-  
-        wd['!ref']=`A2:E${dataLength}`;
-        wd.A2.h, wd.A2.v, wd.A2.w = "field";
-        wd.B2.h, wd.B2.v, wd.B2.w = "deferredLossOfCompanyShare";
-        wd.C2.h, wd.C2.v, wd.C2.w = "deferredDamagesShareOfInsurer";
-        wd.D2.h, wd.D2.v, wd.D2.w = "netBalanceOfCompanyShare";
-        wd.E2.h, wd.E2.v, wd.E2.w = "currency";
-  
-        data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
-  
-        console.log(data);
+          const { 
+            A1, 
+            ...wd }  = ws;
+    
+          wd['!ref']=`A2:E${dataLength}`;
+          wd.A2.h, wd.A2.v, wd.A2.w = "field";
+          wd.B2.h, wd.B2.v, wd.B2.w = "deferredLossOfCompanyShare";
+          wd.C2.h, wd.C2.v, wd.C2.w = "deferredDamagesShareOfInsurer";
+          wd.D2.h, wd.D2.v, wd.D2.w = "netBalanceOfCompanyShare";
+          wd.E2.h, wd.E2.v, wd.E2.w = "currency";
+    
+          data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
+        } else {
+          notify("کاربر گرامی ساختار فایل مورد نظر مطابق با فرم مربوطه شما نمی باشد، لطفا فرم صحیح را ارسال کنید", 'error', 2000)
+          this.fileReset();
+        }
 
-      } else if(this.user.categoryCode == 2) {
+      } else if(this.user.categorycode == 2) {
 
+        if(
+          ws.A2.h == "سهم نگهداری" &&
+          ws.B2.h == "سهم اتکایی" &&
+          ws.C2.h == "کل"
+        ) {
+          const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
+
+          const { 
+            A1, 
+            ...wd }  = ws;
+    
+          wd['!ref']=`A2:C${dataLength}`;
+          wd.A2.h, wd.A2.v, wd.A2.w = "maintenanceShare";
+          wd.B2.h, wd.B2.v, wd.B2.w = "reinsuranceShare";
+          wd.C2.h, wd.C2.v, wd.C2.w = "total";
+
+          data = XLSX.utils.sheet_to_json(wd, {blankrows: false});          
+        } else {
+          notify("کاربر گرامی ساختار فایل مورد نظر مطابق با فرم مربوطه شما نمی باشد، لطفا فرم صحیح را ارسال کنید", 'error', 2000)
+          this.fileReset();
+        }
         
-        const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
+      } else if( this.user.categorycode == 3) {
+  
+        if(
+          ws.B2.h == "رشته" &&
+          ws.C2.h == "زیررشته" &&
+          ws.D2.h == "سال صدور" &&
+          ws.E2.h == "واحد ارز" &&
+          ws.F2.h == "خسارت معوق سهم بیمه ایران " &&
+          ws.G2.h == "سهم بیمه گران اتکایی - اجباری" &&
+          ws.H2.h == "سهم بیمه گران اتکایی - اختیاری" &&
+          ws.I2.h == "سهم بیمه گران اتکایی - قراردادی" &&
+          ws.J2.h == "مجموع سهم بیمه گران اتکایی" &&
+          ws.K2.h == "خسارت معوق سهم خالص بیمه ایران "
+        ) {
+          
+          const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
+    
+          const { 
+            A1, 
+            ...wd }  = ws;
+    
+          wd['!ref']=`B2:K${dataLength}`;
+          wd.A2.h, wd.A2.v, wd.A2.w = "mandatoryRatio";
+          wd.B2.h, wd.B2.v, wd.B2.w = "field";
+          wd.C2.h, wd.C2.v, wd.C2.w = "subfield";
+          wd.D2.h, wd.D2.v, wd.D2.w = "issueYear";
+          wd.E2.h, wd.E2.v, wd.E2.w = "currency";
+          wd.F2.h, wd.F2.v, wd.F2.w = "shareOfDeferredLossOfCompany";
+          wd.G2.h, wd.G2.v, wd.G2.w = "mandatoryReinsurersShare";
+          wd.H2.h, wd.H2.v, wd.H2.w = "optionalReinsurersShare";
+          wd.I2.h, wd.I2.v, wd.I2.w = "contractualReinsurersShare";
+          wd.J2.h, wd.J2.v, wd.J2.w = "totalReinsurersShare";
+          wd.K2.h, wd.K2.v, wd.K2.w = "netDeferredLossOfCompanyShare";
 
-        const { 
-          A1, 
-          ...wd }  = ws;
-  
-        wd['!ref']=`A2:C${dataLength}`;
-        wd.A2.h, wd.A2.v, wd.A2.w = "maintenanceShare";
-        wd.B2.h, wd.B2.v, wd.B2.w = "reinsuranceShare";
-        wd.C2.h, wd.C2.v, wd.C2.w = "total";
+          data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
+        } else {
+          notify("کاربر گرامی ساختار فایل مورد نظر مطابق با فرم مربوطه شما نمی باشد، لطفا فرم صحیح را ارسال کنید", 'error', 2000)
+          this.fileReset();
+        }
 
-        data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
-        
-      } else if( this.user.categoryCode == 3) {
-  
-        const dataLength = Object.keys(ws).filter(item => !item.indexOf("B")).length + 1
-  
-        // for(let i=1; i<dataLength + 1; i++) {
-        //   if (ws[`A${i}`] == undefined) {
-        //     ws[`A${i}`] = ws[`A${i-1}`];
-        //   }
-        // }
-  
-        const { 
-          A1, 
-          ...wd }  = ws;
-  
-        wd['!ref']=`B2:K${dataLength}`;
-        wd.A2.h, wd.A2.v, wd.A2.w = "mandatoryRatio";
-        wd.B2.h, wd.B2.v, wd.B2.w = "field";
-        wd.C2.h, wd.C2.v, wd.C2.w = "subfield";
-        wd.D2.h, wd.D2.v, wd.D2.w = "issueYear";
-        wd.E2.h, wd.E2.v, wd.E2.w = "currency";
-        wd.F2.h, wd.F2.v, wd.F2.w = "shareOfDeferredLossOfCompany";
-        wd.G2.h, wd.G2.v, wd.G2.w = "mandatoryReinsurersShare";
-        wd.H2.h, wd.H2.v, wd.H2.w = "optionalReinsurersShare";
-        wd.I2.h, wd.I2.v, wd.I2.w = "contractualReinsurersShare";
-        wd.J2.h, wd.J2.v, wd.J2.w = "totalReinsurersShare";
-        wd.K2.h, wd.K2.v, wd.K2.w = "netDeferredLossOfCompanyShare";
-
-        data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
-  
-        //console.log(data);
       }
 
       for (const [key, value] of Object.entries(data[0])) {
@@ -428,57 +427,10 @@ export class AddtransactionComponent implements OnInit {
       }      
 
       this.records = data;
-      this.headRecords = this.records.slice(0,5);
+      this.headRecords = this.records.slice(0,3);
 
     }
 
-    /* wire up file reader */
-    // const target: DataTransfer = <DataTransfer>(event.target);
-    
-    // if (target.files.length !== 1) {
-    //   throw new Error('Cannot use multiple files');
-    // }
-    // const reader: FileReader = new FileReader();
-    // reader.readAsBinaryString(target.files[0]);
-    // reader.onload = (e: any) => {
-    //   /* create workbook */
-    //   const binarystr: string = e.target.result;
-    //   const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
-
-    //   /* selected the first sheet */
-    //   const wsname: string = wb.SheetNames[0];
-    //   const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-
-    //   /* save data */
-    //   const data = XLSX.utils.sheet_to_json(ws); // to get 2d array pass 2nd parameter as object {header: 1}
-    //   data.map(x => {
-    //     x['PERSON_ID'] = 
-    //       (x['PERSON_ID'].length == 8) ? '00' + x['PERSON_ID'] :
-    //       (x['PERSON_ID'].length == 9) ? "0" + x['PERSON_ID'] : 
-    //       x['PERSON_ID'];
-    //   });
-
-    //   for (const [key, value] of Object.entries(data[0])) {
-    //     this.arrayKey.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
-    //   }
-
-    //   this.records = data;
-    //   this.headRecords = this.records.slice(0,5);
-
-    //   this.infoForm = {
-    //     id: event.target.files[0].name.split('-')[1].split('.')[0],
-    //     title: event.target.files[0].name.split('-')[0],
-    //     creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
-    //     lastEditDate: new Date(event.target.files[0].lastModified).toLocaleDateString('fa-IR'),
-    //     editor: this.user,
-    //     status: 'در انتظار تایید',
-    //     comment: null
-    //   }
-
-    //   //console.log(this.infoForm);
-    //   //console.log(this.arrayKey)
-    //   //console.log(data); // Data will be logged in array format containing objects
-    // };
   }
 
   fileReset() {
@@ -504,15 +456,59 @@ export class AddtransactionComponent implements OnInit {
     this.longtabs[1].disabled = true;
     this.longtabs[2].disabled = false;
     this.selectedIndex = 2;
+    
   }
 
   submitThree() {
-    this.btnThree = false;
-    this.btnFour = true;
-    this.longtabs[2].disabled = true;
-    this.longtabs[3].disabled = false;
-    this.selectedIndex = 3;
-    this.dataSource.unshift(this.infoForm);
+    let data = {
+      'title': this.infoForm.title,
+      'fiscalYear':this.infoForm.fiscalYear,
+      'fiscalPeriod': this.infoForm.fiscalPeriod,
+      'description': this.infoForm.description,
+      'editor': this.user.user_id,
+      'category': this.user.categorycode,
+      'validator': this.user['validator_id'],
+      'token': this.user.token
+    }
+    this.addTransactionService.addForm(data).then(res => {
+      if(res.status == 200) {
+        //console.log(res)
+        let fileData = {
+          'add_file':'add_file',
+          'form_id': res.db['inserted_id'],
+          'token': this.user.token,
+          'content': JSON.stringify(this.records),
+          'file': this.file
+        }
+        this.addTransactionService.addFile(fileData).then ( res => {
+          if(res.status == 200) {
+            this.btnThree = false;
+            this.btnFour = true;
+            this.longtabs[2].disabled = true;
+            this.longtabs[3].disabled = false;
+            this.selectedIndex = 3;
+            this.transferingForm = fileData['form_id'];
+          }
+
+        })
+      }
+      else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      }
+      else if(res.status == 300) {
+        notify("کاربر شما دسترسی ایجاد چنین فرمی را ندارد، لطفا پس از تصحیح اطلاعات دوباره تلاش کنید", 'error', 2000)
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      } else {
+        notify("در فرآیند ایجاد فرم مشکلی وجود دارد، لطفا دوباره تلاش کنید", 'error', 2000)
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      }
+    })
+    //this.dataSource.unshift(this.infoForm);
   }
 
   returnOne() {

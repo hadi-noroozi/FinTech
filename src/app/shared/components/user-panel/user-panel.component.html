@@ -1,12 +1,13 @@
 <div class="user-panel">
-  <div class="user-info">
+  <div class="user-info" dir="rtl">
     <div class="image-container">
-      <img [src]="user.avatarUrl" class="user-image" width="30px" height="30px" alt="">
+      <img [src]="'assets/images/' + user.avatarurl" class="user-image" width="30px" height="30px" alt="">
     </div>
-    <div class="user-name">{{user.email}}</div>
+    <div class="user-name">{{user.name}}</div>
   </div>
   <dx-context-menu
     *ngIf="menuMode === 'context'"
+    rtlEnabled="true"
     [items]="menuItems"
     target=".user-button"
     showEvent="dxclick"

@@ -19,8 +19,9 @@ export class UserPanelComponent {
 
   @Input()
   user: { 
+    name:  string,
     email: string,
-    avatarUrl: string
+    avatarurl: string
   }
 
   constructor() {}

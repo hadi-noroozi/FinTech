@@ -38,7 +38,7 @@ export class SideNavigationMenuComponent implements AfterViewInit, OnDestroy {
 
   private _items;
   get items() {
-    if(this.user.PositionId == 1) {
+    if(this.user.position_id == 1) {
       if (!this._items) {
         this._items = navigation.map((item) => {
           if(item.path && !(/^\//.test(item.path))){
@@ -47,7 +47,7 @@ export class SideNavigationMenuComponent implements AfterViewInit, OnDestroy {
            return { ...item, expanded: !this._compactMode }
           });
       }
-    } else if (this.user.PositionId == 2) {
+    } else if (this.user.position_id == 0) {
       if (!this._items) {
         this._items = navigation2.map((item) => {
           if(item.path && !(/^\//.test(item.path))){

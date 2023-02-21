@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 
 export class FormList {
-  id: String;
+  id: Number;
   correctiveCode?: String;
   title: String;
   category: String;
   creatingDate: Date;
   editor: String;
+  applicent: String;
   lastEditDate: Date;
   validator: String;
   status: String;
@@ -19,11 +20,12 @@ export class FormList {
 
 const formList: FormList[] = [
   {
-    id: '1223421456',
+    id: 1223421456,
     title: 'خسارت معوقه قبولی اصلاحی سال 1401',
     category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/09/30"),
     editor: "علیرضا عمرانی",
+    applicent: '',
     lastEditDate: new Date("1400/10/20"),
     validator: "نسترن کلاهچی",
     status: "در انتظار تایید",
@@ -33,11 +35,12 @@ const formList: FormList[] = [
     fiscalPeriod: "سالانه",
     fiscalYear: "1400"
   }, {
-    id: '1546411457',
+    id: 1546411457,
     title: 'خسارت معوقه قبولی اصلاحی سال 1400',
     category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/09/25"),
     editor: "علیرضا عمرانی",
+    applicent: '',
     lastEditDate: new Date("1400/10/01"),
     validator: "نسترن کلاهچی",
     status: "تایید شده",
@@ -47,12 +50,13 @@ const formList: FormList[] = [
     fiscalPeriod: "نیمه اول سال",
     fiscalYear: "1400"
   }, {
-    id: '5442111456',
+    id: 5442111456,
     correctiveCode: '1546411456',
     title: 'خسارت معوقه قبولی اصلاحی سال 1399 -اصلاحیه',
     category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/08/30"),
     editor: "علیرضا عمرانی",
+    applicent: '',
     lastEditDate: new Date("1400/09/21"),
     validator: "نسترن کلاهچی",
     status: "تایید شده",
@@ -62,11 +66,12 @@ const formList: FormList[] = [
     fiscalPeriod: "فصل بهار",
     fiscalYear: "1400"
   }, {
-    id: '1546411456',
+    id: 1546411456,
     title: 'خسارت معوقه قبولی اصلاحی سال 1400',
     category: "خسارت معوقه اتکایی",
     creatingDate: new Date("1400/07/30"),
     editor: "علیرضا عمرانی",
+    applicent: '',
     lastEditDate: new Date("1400/08/30"),
     validator: "نسترن کلاهچی",
     status: "نیازمند ویرایش",
@@ -87,7 +92,7 @@ export class Longtab {
   
 }
 
-let longtabs: Longtab[] = [
+const longtabs: Longtab[] = [
   {
       text: "1. بارگذاری داده ها",
       icon:'upload',
@@ -713,21 +718,132 @@ const formInfo: any[] = [
 ]
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AddtransactionService {
 
-  constructor() { }
-  
-  getFormListData() {
-    return formList;
-  }
+    resourceUrl = 'https://arz-yab.ir/iic_finance/API/v0.1/controller.php';
+        
+    constructor() { }
 
-  getLongtabs(): Longtab[] {
-      return longtabs;
-  }
+    async addForm(data: any) {
 
-  getFormInfo(): any[] {
-    return formInfo;
-  }
+        try {
+            const config = {
+                method: 'POST',
+                body: this.getFormData(data)
+            }
+            let result;
+            await fetch(this.resourceUrl + '?add_form', config)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        }
+        catch {
+            let result = null;
+            return result;
+        }
+    }
+
+    async addFile(data: any) {
+        try {
+            const config = {
+                method: 'POST',
+                // headers:new Headers({
+                //     'Content-type': 'multipart/form-data; boundary=----WebKitFormBoundaryyjyMbYKorzpQXUca'
+                // }),
+                body: this.getFormData(data)
+            }
+            let result;
+            await fetch(this.resourceUrl, config)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        } catch {
+            let result = null;
+            return result;
+        }
+    }
+
+    async getForms(data: any) {
+        try {
+            const config = {
+                method: 'POST',
+                body: this.getFormData(data)
+            }
+            let result;
+            await fetch(this.resourceUrl + '?select_recent_forms', config)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        } catch {
+            let result = null;
+            return result;
+        }
+    }
+
+    async getCategories() {
+        try {
+            let result;
+            await fetch(this.resourceUrl + '?category')
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        } catch {
+            let result = null;
+            return result;
+        }
+    }
+
+    async getValidators() {
+        try {
+            let result;
+            await fetch(this.resourceUrl + '?validator')
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        } catch {
+            let result = null;
+            return result;
+        }
+    }
+    
+    getFormListData() {
+        return formList;
+    }
+
+    getLongtabs(): Longtab[] {
+        return longtabs;
+    }
+
+    getFormInfo(): any[] {
+        return formInfo;
+    }
+
+    getFormData(object) {
+        const formData = new FormData();
+        Object.keys(object).forEach(key => formData.append(key, object[key]));
+        return formData;
+    }
+
 }

@@ -30,7 +30,7 @@ export class ProfileComponent {
     // };
     this.formItem = [
       {
-        dataField: 'ID',
+        dataField: 'user_id',
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
@@ -41,7 +41,7 @@ export class ProfileComponent {
         }
       },
       {
-        dataField: 'FirstName',
+        dataField: 'firstname',
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
@@ -52,7 +52,7 @@ export class ProfileComponent {
         }
       },
       {
-        dataField: 'LastName',
+        dataField: 'lastname',
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
@@ -63,7 +63,7 @@ export class ProfileComponent {
         }
       },
       {
-        dataField: 'Position',
+        dataField: 'position',
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
@@ -74,7 +74,7 @@ export class ProfileComponent {
         }
       },
       {
-        dataField: 'BirthDate',
+        dataField: 'birthdate',
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
@@ -86,7 +86,7 @@ export class ProfileComponent {
         }
       },    
       {
-        dataField: 'HireDate',
+        dataField: 'hiredate',
         editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
@@ -97,7 +97,7 @@ export class ProfileComponent {
         }
       }, 
       {
-        dataField: 'Notes',
+        dataField: 'notes',
         editorType: "dxTextBox",
         colSpan: 2,
         editorOptions: {
