@@ -20,7 +20,8 @@ import {
   DxFormModule,
   DxToastModule,
   DxSwitchModule,
-  DxTextBoxModule
+  DxTextBoxModule,
+  DxHtmlEditorModule
 } from 'devextreme-angular';
 import { AddtransactionComponent } from './pages/addtransaction/addtransaction.component';
 import { GridCellDataPipe } from './grid-cell-data.pipe';
@@ -103,7 +104,8 @@ const routes: Routes =  [
     DxTextAreaModule,
     DxTextBoxModule,
     DxToastModule,
-    DxSwitchModule
+    DxSwitchModule,
+    DxHtmlEditorModule
     ],
   providers: [AuthGuardService],
   exports: [RouterModule],

@@ -29,6 +29,7 @@ export class AddtransactionComponent implements OnInit {
   popupVisible = false;
   popupVisible2 = false;
   popupVisibleInfo = false;
+  popupEvents= false;
   popupInfoTitle: string;
   popup2Title: String;
   popup2Content: String;
@@ -36,8 +37,12 @@ export class AddtransactionComponent implements OnInit {
   popupInfoFormData: any[];
   arrayKey2: any[] = [];
   formItem2: any[];
+  popupEventsTitle: String;
+  popupEventsData: any[];
+  private comment: String;
+  comments: any[] = [];
 
-  correctiveId: String;
+  correctiveId: Number;
 
   longtabs: Longtab[];
   selectedIndex: number = 0;
@@ -127,7 +132,7 @@ export class AddtransactionComponent implements OnInit {
     return result;
   }
 
-  showInfo(id? : String) {
+  showInfo(id? : Number) {
     this.fileReset();
     this.popupVisible = true;
     this.correctiveId = id ? id: null;
@@ -186,14 +191,6 @@ export class AddtransactionComponent implements OnInit {
             placeholder:"نوع فرم را تعیین کنید",
             onValueChanged(data) {
               this.infoForm = {...this.infoForm ,catgory: data.value};
-              // if(
-              //   this.infoForm.validator != undefined && 
-              //   this.infoForm.category != undefined
-              //   ) {
-              //   this.nextBtn = false;
-              // } else {
-              //   this.nextBtn = true;
-              // }
             },
           },
           label: {
@@ -234,14 +231,6 @@ export class AddtransactionComponent implements OnInit {
             readOnly: true,
             onValueChanged(data) {
               this.infoForm = {...this.infoForm ,validator: data.value};
-              // if(
-              //   this.infoForm.validator != undefined && 
-              //   this.infoForm.category != undefined
-              //   ) {
-              //   this.nextBtn = false;
-              // } else {
-              //   this.nextBtn = true;
-              // }
             },
           },
           label: {
@@ -250,10 +239,10 @@ export class AddtransactionComponent implements OnInit {
         },
         {
           dataField: 'fiscalYear',
-          editorType: "dxSelectBox",
+          editorType: this.correctiveId ?  "dxTextBox" : "dxSelectBox",
           editorOptions: {
+            readOnly: this.correctiveId,
             dataSource: this.fiscalYearList,
-            maxLength: 200,
             placeholder:"سال مالی را وارد کنید",
             stylingMode: 'filled',
             onValueChanged(data) {
@@ -282,7 +271,7 @@ export class AddtransactionComponent implements OnInit {
               "بهمن",
               "اسفند",
             ],
-            maxLength: 200,
+            readOnly: this.correctiveId,
             placeholder:"دوره مالی را وارد کنید",
             stylingMode: 'filled',
             onValueChanged(data) {
@@ -299,7 +288,8 @@ export class AddtransactionComponent implements OnInit {
           editorType: 'dxTextBox',
           colSpan: 2,
           editorOptions: {
-            maxLength: 200,
+            readOnly: this.correctiveId,
+            maxLength: 280,
             placeholder:"توضیحات پیوست را وارد کنید",
             stylingMode: 'filled',
             onValueChanged(data) {
@@ -313,18 +303,29 @@ export class AddtransactionComponent implements OnInit {
         },      
       ];
 
-      this.infoForm = {
-        // id: Math.floor(Math.random() * 10000000000) + 1,
-        title: ws.A1.h,
-        creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
-        editor: this.user.name,
-        category: this.categories.filter(item => item.id == this.user.categorycode)[0].title ,
-        validator: this.validators.filter(item => item.id == this.user['validator_id'])[0].name ,
-        // correctiveCode: this.correctiveId,
-        // status: 'در انتظار تایید',
-        // comment: null,
-        // address: this.slectedCategroy.sample
-      };
+      if(this.correctiveId) {
+        let formindex = this.dataSource.filter(item => item.id == this.correctiveId)[0];
+        this.infoForm = {
+          title: formindex.title,
+          creatingDate: formindex.creatingDate,
+          editor: formindex.editor,
+          category: formindex.category,
+          validator: formindex.validator,
+          fiscalYear: formindex.fiscalYear,
+          fiscalPeriod: formindex.fiscalPeriod,
+          description: formindex.description,
+          correctiveCode: this.correctiveId ? this.correctiveId : null,
+        };
+      } else {
+        this.infoForm = {
+          title: ws.A1.h,
+          creatingDate: new Date(Date.now()).toLocaleDateString('fa-IR'),
+          editor: this.user.name,
+          category: this.categories.filter(item => item.id == this.user.categorycode)[0].title ,
+          validator: this.validators.filter(item => item.id == this.user['validator_id'])[0].name ,
+          correctiveCode: null,
+        };
+      }
 
       let data;
 
@@ -460,56 +461,108 @@ export class AddtransactionComponent implements OnInit {
   }
 
   submitThree() {
-    let data = {
-      'title': this.infoForm.title,
-      'fiscalYear':this.infoForm.fiscalYear,
-      'fiscalPeriod': this.infoForm.fiscalPeriod,
-      'description': this.infoForm.description,
-      'editor': this.user.user_id,
-      'category': this.user.categorycode,
-      'validator': this.user['validator_id'],
-      'token': this.user.token
-    }
-    this.addTransactionService.addForm(data).then(res => {
-      if(res.status == 200) {
-        //console.log(res)
-        let fileData = {
-          'add_file':'add_file',
-          'form_id': res.db['inserted_id'],
-          'token': this.user.token,
-          'content': JSON.stringify(this.records),
-          'file': this.file
+    if(this.correctiveId) {
+      let fileData = {
+        'add_file':'add_file',
+        'form_id': this.correctiveId,
+        'token': this.user.token,
+        'content': JSON.stringify(this.records),
+        'file': this.file
+      }
+      this.addTransactionService.addFile(fileData).then ( res => {
+        if(res.status == 200) {
+          this.btnThree = false;
+          this.btnFour = true;
+          this.longtabs[2].disabled = true;
+          this.longtabs[3].disabled = false;
+          this.selectedIndex = 3;
+          this.transferingForm = fileData['form_id'];
         }
-        this.addTransactionService.addFile(fileData).then ( res => {
-          if(res.status == 200) {
-            this.btnThree = false;
-            this.btnFour = true;
-            this.longtabs[2].disabled = true;
-            this.longtabs[3].disabled = false;
-            this.selectedIndex = 3;
-            this.transferingForm = fileData['form_id'];
+      })
+    } else {
+      let data = {
+        'title': this.infoForm.title,
+        'fiscalYear':this.infoForm.fiscalYear,
+        'fiscalPeriod': this.infoForm.fiscalPeriod,
+        'description': this.infoForm.description,
+        'editor': this.user.user_id,
+        'category': this.user.categorycode,
+        'validator': this.user['validator_id'],
+        'token': this.user.token
+      }
+      this.addTransactionService.addForm(data).then(res => {
+        if(res.status == 200) {
+          //console.log(res)
+          let fileData = {
+            'add_file':'add_file',
+            'form_id': res.db['inserted_id'],
+            'token': this.user.token,
+            'content': JSON.stringify(this.records),
+            'file': this.file
           }
+          this.addTransactionService.addFile(fileData).then ( res => {
+            if(res.status == 200) {
+              this.btnThree = false;
+              this.btnFour = true;
+              this.longtabs[2].disabled = true;
+              this.longtabs[3].disabled = false;
+              this.selectedIndex = 3;
+              this.transferingForm = fileData['form_id'];
+            }
+          })
+        }
+        else if(res.status == 404) {
+          notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+          this.authService.logOut();
+        }
+        else if(res.status == 300) {
+          notify("کاربر شما دسترسی ایجاد چنین فرمی را ندارد، لطفا پس از تصحیح اطلاعات دوباره تلاش کنید", 'error', 2000)
+          setTimeout(function(){
+            location.reload()
+          },2100);
+        } else {
+          notify("در فرآیند ایجاد فرم مشکلی وجود دارد، لطفا دوباره تلاش کنید", 'error', 2000)
+          setTimeout(function(){
+            location.reload()
+          },2100);
+        }
+      })
+    }
+  }
 
-        })
-      }
-      else if(res.status == 404) {
-        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
-        this.authService.logOut();
-      }
-      else if(res.status == 300) {
-        notify("کاربر شما دسترسی ایجاد چنین فرمی را ندارد، لطفا پس از تصحیح اطلاعات دوباره تلاش کنید", 'error', 2000)
+  submitFour(id?: Number) {
+    let data = {
+      'transfer':'transfer',
+      'form_id': id ? id : this.transferingForm,
+      'token': this.user.token,
+    }
+    this.addTransactionService.sendForm(data).then( res => {
+      if(res.status == 200) {
+        notify(`فرم ${id || this.transferingForm} به ناظر ارجاع شد`, 'success', 2000)
+        this.btnOne = false;
+        this.btnFour = false;
+        this.longtabs[0].disabled = false;
+        this.longtabs[3].disabled = true;
+        this.selectedIndex = 0;
+        this.popupVisible = false;
+        this.fileReset();
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      } else if(res.status == 300) {
+        notify("حساب کاربری شما دسترسی ارجاع چنین فرمی را ندارد", 'error', 2000)
         setTimeout(function(){
           location.reload()
         },2100);
       } else {
-        notify("در فرآیند ایجاد فرم مشکلی وجود دارد، لطفا دوباره تلاش کنید", 'error', 2000)
+        notify("با عرض پوزش در فرآیند ارجاع فرم مشکلی پیش آمده است", 'error', 2000)
         setTimeout(function(){
           location.reload()
         },2100);
       }
     })
-    //this.dataSource.unshift(this.infoForm);
-  }
+
+  }  
 
   returnOne() {
     this.btnOne = true;
@@ -535,6 +588,7 @@ export class AddtransactionComponent implements OnInit {
     this.selectedIndex = 0;
     this.popupVisible = false;
     this.fileReset();
+    location.reload();
   }  
 
   showDescription(id) {
@@ -542,11 +596,41 @@ export class AddtransactionComponent implements OnInit {
     this.popup2Content = this.dataSource.filter(item => item.id == id )[0].description;
     this.popupVisible2 = true;
   }
+
+  StatusValidatior(rowData) {
+    return rowData;
+  }
   
-  showComment(id) {
-    this.popup2Title = "نظر ناظر | " + this.dataSource.filter(item => item.id == id )[0].title;
-    this.popup2Content = this.dataSource.filter(item => item.id == id )[0].comment;
-    this.popupVisible2 = true;
+  // showComment(id) {
+  //   this.popup2Title = "نظر ناظر | " + this.dataSource.filter(item => item.id == id )[0].title;
+  //   this.popup2Content = this.dataSource.filter(item => item.id == id )[0].comment;
+  //   this.popupVisible2 = true;
+  // }
+
+  showEvents(id) {
+    this.popupEventsTitle = "تاریخچه رویدادهای | " + this.dataSource.filter(item => item.id == id )[0].title;
+
+    let data = {
+      'token': this.user.token,
+      'form_id': id
+    }
+    this.addTransactionService.getEventsData(data).then(res => {
+      if(res.status == 200) {
+        this.popupEventsData = res.data;
+        this.popupEvents = true;
+      } else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      } else if(res.status == 300) {
+        notify("کاربر شما دسترسی مشاهده اطلاعات این فرم را ندارد", 'error', 2000)
+      } else {
+        notify("با عرض پوزش، در دریافت اطلاعات این فرم مشکلی به وجود آمده است", 'error', 2000)
+        this.popupEventsData = null;
+      }
+    });
+
+    //this.popup2Content = this.dataSource.filter(item => item.id == id )[0].comment;
+
   }
 
   getData(rowData) {
@@ -599,15 +683,26 @@ export class AddtransactionComponent implements OnInit {
       },
       {
         dataField: 'creatingDate',
-        editorType: "dxDateBox",
+        editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
           stylingMode: 'filled',
           displayFormat:'yyyy/MM/dd',
-
         },
         label: {
           text: "تاریخ ایجاد",
+        }
+      },
+      {
+        dataField: 'lastEditDate',
+        editorType: "dxTextBox",
+        editorOptions: {
+          readOnly: true,
+          stylingMode: 'filled',
+          displayFormat:'yyyy/MM/dd',
+        },
+        label: {
+          text: "تاریخ آخرین ویرایش",
         }
       },
       {
@@ -690,11 +785,70 @@ export class AddtransactionComponent implements OnInit {
       },      
     ]
 
-    this.popupInfoFormData = this.addTransactionService.getFormInfo();
-    for (const [key, value] of Object.entries(this.popupInfoFormData[0])) {
-      this.arrayKey2.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
-    }    
-    //console.log(this.popupInfo,this.popupInfoFormData);
+    let data = {
+      'token': this.user.token,
+      'form_id': rowData.data.id
+    }
+
+    this.addTransactionService.getFormDataSet(data).then(res => {
+      if(res.status == 200) {
+        this.popupInfoFormData = JSON.parse(res.data.content);
+        if(typeof this.popupInfoFormData == 'object') {
+          for (const [key, value] of Object.entries(this.popupInfoFormData[0])) {
+            this.arrayKey2.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
+          }
+        }
+      } else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      } else if(res.status == 300) {
+        notify("کاربر شما دسترسی مشاهده اطلاعات این فرم را ندارد", 'error', 2000)
+      } else {
+        notify("با عرض پوزش، در دریافت اطلاعات این فرم مشکلی به وجود آمده است", 'error', 2000)
+        this.popupInfoFormData = null;
+      }
+    });
+
+    this.addTransactionService.getEventsData(data).then(res => {
+      if(res.status == 200) {
+        this.comments = res.data.filter(item => item.status.id == 0);
+      } else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      } else if(res.status == 300) {
+        notify("کاربر شما دسترسی مشاهده اطلاعات این فرم را ندارد", 'error', 2000)
+      } else {
+        notify("با عرض پوزش، در دریافت اطلاعات این فرم مشکلی به وجود آمده است", 'error', 2000)
+        this.comments = null
+      }
+    });
+  }
+
+  onWheelRight(event: WheelEvent): void {
+    document.getElementById('right-elm').scrollTop += event.deltaY;
+  }
+
+  onWheelLeft(event: WheelEvent): void {
+    document.getElementById('chat-window').scrollTop += event.deltaY;
+  }
+
+  sendComment() {
+    let data = {
+      'content': this.comment,
+      'form_id': this.popupInfo.id,
+      'token': this.user.token,
+    }
+    this.addTransactionService.addComment(data).then(res => {
+      if(res.status==200){
+        notify("دیدگاه شما ثبت شد", 'success', 2000)
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      } else {
+        notify("در فرایند ثبت دیدگاه شما مشکلی پیش آمد", 'success', 2000)
+      }
+    })
+    
   }
 }
 

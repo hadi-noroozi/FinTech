@@ -49,7 +49,7 @@
                         noDataText="تا کنون هیچ فرمی ثبت نکرده اید" 
                         [rtlEnabled]="true">
 
-                        <dxi-column caption="#" dataField="id" dataType="number" [hidingPriority]="3" sortOrder="desc">
+                        <dxi-column caption="#" dataField="id" dataType="number" [hidingPriority]="2" sortOrder="desc">
                         </dxi-column>
                         <dxi-column caption="عنوان فرم" dataField="title" dataType="string" [hidingPriority]="9">
                         </dxi-column>
@@ -58,26 +58,15 @@
                         <dxi-column caption="سال مالی" dataField="fiscalYear" dataType="string" width="90" [hidingPriority]="8">
                         </dxi-column>
                         <dxi-column caption="دوره مالی" dataField="fiscalPeriod" dataType="string" width="90" [hidingPriority]="7">
-                        </dxi-column>
-
-                        <!-- 
-                        <dxi-column caption="ویرایش کننده" dataField="editor" dataType="string" [hidingPriority]="0">
-                        </dxi-column>                         
-                        -->
-                        
-                        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" width="90" format='yyyy/MM/dd' width="100" [hidingPriority]="4">
-                        </dxi-column>                                  
-                        <dxi-column caption="ناظر" dataField="validator" dataType="string" [hidingPriority]="1">
                         </dxi-column> 
-
-                        <!-- 
-                        <dxi-column caption="پیوست به" dataField="correctiveCode" dataType="string" [hidingPriority]="1">
+                        <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="100" [hidingPriority]="3">
                         </dxi-column> 
-                        -->
-
+                        <dxi-column caption="آخرین ویرایش" dataField="lastEditDate" dataType="date" format='yyyy/MM/dd' width="105" [hidingPriority]="4">
+                        </dxi-column>                                                                   
+                        <dxi-column caption="ناظر" dataField="validator" dataType="string" [hidingPriority]="0">
+                        </dxi-column> 
                         <dxi-column caption="وضعیت" dataField="status" width="110" cellTemplate="diffCellTemplate" [hidingPriority]="6"></dxi-column>                                                
-
-                        <dxi-column caption="" cellTemplate="diffCellTemplate2"  [calculateCellValue]="buttonsValidatior" [hidingPriority]="2"></dxi-column>
+                        <dxi-column caption="" cellTemplate="diffCellTemplate2"  [calculateCellValue]="buttonsValidatior" [hidingPriority]="1"></dxi-column>
 
                         <div *dxTemplate="let d of 'diffCellTemplate'">
                             <div class="item" *ngIf="d.value == '100'">
@@ -102,13 +91,22 @@
                                     class="ml-1">
                                 </dx-button>
                                 <dx-button 
-                                    id="comment"
-                                    icon="comment" 
-                                    (onClick)="showComment(d.value[0])"
+                                    id="logs"
+                                    icon="event" 
+                                    (onClick)="showEvents(d.value[0])"
                                     stylingMode="text" 
                                     type="danger"
                                     class="ml-1">
-                                </dx-button>    
+                                </dx-button>
+                                <dx-button 
+                                    icon="arrowup" 
+                                    title="ارجاع"
+                                    [disabled] = "d.value[1] == '200'"
+                                    stylingMode="text" 
+                                    type="success"
+                                    class="ml-1"
+                                    (onClick)="submitFour(d.value[0])">
+                                </dx-button>     
                                 <dx-button 
                                     icon="upload" 
                                     [disabled] = "d.value[1] == '200'"
@@ -128,7 +126,7 @@
                         </div>
 
                         <dxo-load-panel [enabled]="true"></dxo-load-panel>
-                        <dxo-paging [pageSize]="50"></dxo-paging>
+                        <dxo-paging [enabled]="false"></dxo-paging>
                     </dx-data-grid>
                 </div>
             </div>
@@ -151,13 +149,13 @@
             <div class="container-fluid py-3">
                 <div class="row">
                     <div class="col-12 text-right px-3 " [hidden]="!correctiveId">
-                        <p class="pb-0 mb-0">
-                            اصلاحیه
+                        <p class="pb-0 mb-0 px-3">
+                            اصلاحیه به
                             فرم {{correctiveId}}
                         <p>
                     </div>
                     <div class="col-12 text-center" [hidden]="!(records.length == 0)">
-                        <p class="text-right px-3 pt-3">
+                        <p class="text-right px-3 ">
                             لطفا داده های مربوطه را بارگذاری نمایید.
                             <a href="{{this.slectedCategroy.sample}}" class="btn btn-sm btn-link" type="button">دانلود نمونه قالب مربوطه</a>
                         </p>
@@ -175,7 +173,7 @@
                     </div>
                     <div class="col-12 text-center px-0" [hidden]="!(records.length > 0)">
                         <div class="w-100 mx-auto ">
-                            <p class="text-justify p-3">
+                            <p class="text-justify px-3">
                                 ساختار داده های آپلود شده را مشاهده و بررسی نمایید
                                 و در صورت صحت ساختار داده ها بر روی دکمه تایید و ادامه کلیک کنید.
                             </p>
@@ -193,7 +191,7 @@
                                 [columnAutoWidth]="true"
                                 [showBorders]="false"
                                 [rtlEnabled]="true"
-                                height="59vh"
+                                height="58vh"
                                 [columnAutoWidth]="true">
                                 
                                 <dxi-column dataField="key" caption="عنوان" cellTemplate="titleCellTemplate"></dxi-column>
@@ -505,9 +503,8 @@
                         </dx-form>
                     </div>
                     <div class="col-12 text-center pt-3">
-                        <dx-button class="next-btn mx-1" stylingMode="conatined" type="success" text="ارجاع به ناظر" icon="check"
+                        <dx-button class="next-btn mx-1" stylingMode="conatined" type="success" text="ثبت و ادامه" icon="check"
                           [rtlEnabled]="true" (onClick)="submitThree()" [disabled]="!nextBtn">
-          
                         </dx-button>
                         <dx-button class="reset-btn mc-1" stylingMode="outlined" type="danger" text="بازگشت" icon="back"
                           [rtlEnabled]="true" (onClick)="returnTwo()">
@@ -521,9 +518,47 @@
                 <div class="row">
                     <div class="col-12 text-center" *ngIf="infoForm">
                         <p class="text-justify">
-                            فرم مورد نظر شما الصاق گردید و در انتظار تایید ناظر قرار دارد
+                            فرم مورد نظر شما الصاق گردید.                        
+                            <br>
+                            <br>
+                            برای ارجاع دادن فرم به ناظر بر روی ارجاع به ناظر کلیک کنید
                         </p>
+                        <div class="col-12 px-0">
+                            <dx-data-grid
+                                id="gridContainerRow"
+                                [dataSource]="[infoForm]"
+                                [hoverStateEnabled]="true"
+                                [rowAlternationEnabled]="true"
+                                [showColumnLines]="false"
+                                [showRowLines]="false"
+                                [autoNavigateToFocusedRow]="true"
+                                [allowColumnReordering]="true"
+                                [allowColumnResizing]="true"
+                                [columnAutoWidth]="true"
+                                [showBorders]="false"
+                                [remoteOperations]="true" 
+                                [rtlEnabled]="true"
+                                >
+                                
+                                <dxi-column caption="عنوان فرم" dataField="title" dataType="string" >
+                                </dxi-column>
+                                <dxi-column caption="دسته بندی" dataField="category" dataType="string" >
+                                </dxi-column>
+                                <dxi-column caption="سال مالی" dataField="fiscalYear" dataType="string" width="90" >
+                                </dxi-column>
+                                <dxi-column caption="دوره مالی" dataField="fiscalPeriod" dataType="string" width="90" >
+                                </dxi-column>
+                                <dxi-column caption="تاریخ ایجاد" dataField="creatingDate" dataType="date" format='yyyy/MM/dd' width="105" >
+                                </dxi-column>                                                                   
+                                <dxi-column caption="ناظر" dataField="validator" dataType="string">
+                                </dxi-column> 
+
+                            </dx-data-grid>
+                        </div>
                         <div class="col-12 text-center py-3">
+                            <dx-button class="mx-1" stylingMode="conatined" type="success" text="ارجاع به ناظر" icon="arrowup"
+                                [rtlEnabled]="true" (onClick)="submitFour()">
+                            </dx-button>
                             <dx-button class="reset-btn mc-1" stylingMode="outlined" type="danger" text="بستن صفحه" icon="back"
                               [rtlEnabled]="true" (onClick)="returnThree()">
                             </dx-button>
@@ -559,6 +594,87 @@
 <dx-popup
     width="90%" [height]="670"
     [showTitle]="true"
+    [title]="popupEventsTitle"
+    [dragEnabled]="false"
+    [showCloseButton]="true"
+    [rtlEnabled] = "true"
+    [(visible)]="popupEvents"
+>
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+            
+            <div class="container-fluid ">
+                <div class="row">
+                    <div class="col-12 px-0">
+                        <dx-data-grid 
+                        id="gridContainer3" 
+                        [dataSource]="popupEventsData" 
+                        [hoverStateEnabled]="true"
+                        [columnHidingEnabled]="true"
+                        [rowAlternationEnabled]="true"
+                        [showColumnLines]="false"
+                        [showRowLines]="false"
+                        [autoNavigateToFocusedRow]="true"
+                        [allowColumnReordering]="true"
+                        [allowColumnResizing]="true"
+                        [columnAutoWidth]="true"
+                        [showBorders]="false"
+                        [rtlEnabled]="true"
+                        noDataText="رویدادی جهت نمایش موجود نیست" 
+                        [remoteOperations]="true">
+
+                        <dxi-column caption="کاربر" dataField="username" dataType="string" [hidingPriority]="" width="100">
+                        </dxi-column> 
+                        <dxi-column caption="تاریخ" dataField="date" dataType="date" format='yyyy/MM/dd | hh:mm' width="100" [hidingPriority]="1">
+                        </dxi-column>                                                                    
+
+                        <dxi-column caption="وضعیت" dataField="status" cellTemplate="diffCellTemplateEvent" [hidingPriority]="6" width="100"></dxi-column>                                                
+
+                        <dxi-column caption="توضیحات" dataField="content" cellTemplate="diffCellTemplateEvent2"  [calculateCellValue]="StatusValidatior" [hidingPriority]="1"></dxi-column>
+
+                        <div *dxTemplate="let d of 'diffCellTemplateEvent'">
+                            <div class="item">
+                                <span [class]="'badge alert-' + d.value.color + ' px-2 rounded-pill'" placement="top" [title]="d.value.text">
+                                    {{d.value.text}}
+                                </span>
+                            </div>
+                        </div>
+                        <div *dxTemplate="let d of 'diffCellTemplateEvent2'">
+                            <div class="item" *ngIf="d.value.status.id == '0'">
+                                دیگاه کاربر: <span [innerHtml]="d.value.content"></span>
+                            </div>
+                            <div class="item" *ngIf="d.value.status.id == '1'">
+                                کاربر مربوطه یک
+                                <a [href]="'https://arz-yab.ir/iic_finance/uploads/excel/'+d.value.content" class="btn-link">فایل</a>
+                                
+                                به فرم الصاق کرد
+                            </div>
+                            <div class="item" *ngIf="d.value.status.id == '3'">
+                                فرم توسط ناظر تایید شد
+                            </div>
+                            <div class="item" *ngIf="d.value.status.id == '4'">
+                                ناظر فرم را به کارشناس جهت ویرایش ارجاع داد
+                            </div>
+                            <div class="item" *ngIf="d.value.status.id == '5'">
+                                کارشناس فرم را جهت بررسی به ناظر ارجاع داد
+                            </div>
+
+                        </div>
+
+                        <dxo-load-panel [enabled]="true"></dxo-load-panel>
+                        <dxo-paging [enabled]="false"></dxo-paging>
+
+                      </dx-data-grid>                        
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
+    </div>
+</dx-popup>
+
+<dx-popup
+    width="90%" [height]="670"
+    [showTitle]="true"
     [title]="popupInfoTitle"
     [dragEnabled]="false"
     [showCloseButton]="true"
@@ -566,25 +682,21 @@
     [(visible)]="popupVisibleInfo"
 >
     <div *dxTemplate="let data of 'content'">
-        <dx-scroll-view width="100%" height="100%">
-            
-            <div class="container-fluid ">
-                <div class="row">
-                    
-                    <div class="col-12">
-                        <h2 class="content-block iranyekan text-right mx-3 ">مشخصات فرم</h2>
-                        <dx-form id="form"
-                            [formData]="popupInfo"
-                            [items]="formItem2"
-                            labelMode="floating"
-                            [rtlEnabled]="true"
-                            [colCountByScreen]="colCountByScreen"
-                        >
-                        </dx-form>
-                    </div>
-                    <div class="col-12 px-0">
-                        <h2 class="content-block iranyekan text-right mx-3 px-3">اطلاعات فرم</h2>
-                        <dx-data-grid 
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-9 px-0" id="right-elm" dir="ltr" (wheel)="onWheelRight($event)" style="overflow-y: scroll;height: 600px;">
+                    <h2 class="content-block iranyekan text-right mx-3 ">مشخصات فرم</h2>
+                    <dx-form id="form"
+                        [formData]="popupInfo"
+                        [items]="formItem2"
+                        labelMode="floating"
+                        [rtlEnabled]="true"
+                        [colCountByScreen]="colCountByScreen"
+                    >
+                    </dx-form>
+
+                    <h2 class="content-block iranyekan text-right mx-3 px-3">اطلاعات فرم</h2>
+                    <dx-data-grid 
                         id="gridContainer3" 
                         [dataSource]="popupInfoFormData" 
                         [hoverStateEnabled]="true"
@@ -597,7 +709,7 @@
                         [columnAutoWidth]="true"
                         [showBorders]="false"
                         [rtlEnabled]="true"
-                        
+                        noDataText="رکوردی جهت نمایش موجود نیست" 
                         [remoteOperations]="true">
 
                         <dxi-column
@@ -645,21 +757,62 @@
                             </dxo-format>
                         </dxi-column> 
 
+                        <dxo-load-panel [enabled]="true"></dxo-load-panel>
                         <dxo-paging [enabled]="false"></dxo-paging>
-                        <dxo-editing
-                          mode="batch"
-                          [allowUpdating]="false"
-                          [allowAdding]="false"
-                          [allowDeleting]="false"
-                          [selectTextOnEditStart]="selectTextOnEditStart"
-                          [startEditAction]="startEditAction"
-                        >
-                        </dxo-editing>
 
-                      </dx-data-grid>                        
+                    </dx-data-grid>                             
+                </div>
+                <div class="col-lg-3 px-0" dir="ltr">
+                    <div id="chat-window" (wheel)="onWheelLeft($event)">
+                        <p class="text-right">دیدگاه ها</p>
+                        <div class="messages w-100 d-flex flex-wrap" dir="rtl">
+                            <div class="message dx-theme-background-color " 
+                                *ngFor="let item of comments" 
+                                [ngClass]="(user.name == item.username) ? 'my-message ml-auto' : 'mr-auto'">
+                                <div [ngClass]="(user.name == item.username) ? 'alert-primary ml-auto' : 'alert-success mr-auto'"
+                                    class="content pt-1 px-1 rounded ">
+                                    <div class="name"> {{item.username}} </div>
+                                    <div class="date"> {{item.date}} </div>
+                                </div>
+                                <div class="text pt-2" [innerHtml]="item.content">
+
+                                </div>
+                            </div>
+                        </div>
+                        <br>
                     </div>
+                    <dx-html-editor 
+                        [(value)]="comment"
+                        [height]="136+57"
+                        [disabled]="(popupInfo.status==200)"
+                        [rtlEnabled]="true" 
+                        [placeholder]="(popupInfo.status==200) ? 'فرم تایید شده امکان ثبت دیدگاه ندارد' : 'دیدگاه خود را اینجا وارد کنید'">
+                        <dxo-toolbar>
+                            <dxi-item widget="dxButton">
+                                <dx-button 
+                                    stylingMode="conatined" type="success" 
+                                    icon="message" stylingMode='text'
+                                    [rtlEnabled]="rtlEnabled"
+                                    (onClick)="sendComment()" >
+                                </dx-button>
+                            </dxi-item>
+                        </dxo-toolbar>
+                        <dxi-mention
+                            valueExpr="name"
+                            displayExpr="name"
+                            searchExpr="name"
+                            [dataSource]="validators">
+                        </dxi-mention>
+                    </dx-html-editor>
+                    <!-- <dx-button 
+                        stylingMode="conatined" type="success" 
+                        text="ارسال دیدگاه" icon="message"
+                        [disabled]="(popupInfo.status==200)"
+                        [rtlEnabled]="rtlEnabled" width="100%">
+                    </dx-button> -->
+
                 </div>
             </div>
-        </dx-scroll-view>
+        </div>
     </div>
 </dx-popup>

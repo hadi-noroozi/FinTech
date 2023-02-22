@@ -101,22 +101,22 @@ const longtabs: Longtab[] = [
       focusStateEnabled: false,
   },
   {
-      text: "2. ویرایش اطلاعات",
-      icon:'edit',
+      text: "2. بررسی اطلاعات",
+      icon:'search',
       disabled: true,
       link:'step-two',
       focusStateEnabled: false
   },
   {
-      text: "3. تایید اولیه و ارجاع به ناظر",
+      text: "3. تایید اولیه",
       icon:'selectall',
       disabled: true,
       link:'step-three',
       focusStateEnabled: false
   },
   {
-      text: "4. تایید نهایی توسط ناظر",
-      icon:'check',
+      text: "4. و ارجاع به ناظر",
+      icon:'arrowup',
       disabled: true,
       link:'step-five',
       focusStateEnabled: false
@@ -773,6 +773,52 @@ export class AddtransactionService {
         }
     }
 
+    async sendForm(data: any) {
+
+        try {
+            const config = {
+                method: 'POST',
+                body: this.getFormData(data)
+            }
+            let result;
+            await fetch(this.resourceUrl + '?transfer', config)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        }
+        catch {
+            let result = null;
+            return result;
+        }
+    }
+
+    async addComment(data: any) {
+
+        try {
+            const config = {
+                method: 'POST',
+                body: this.getFormData(data)
+            }
+            let result;
+            await fetch(this.resourceUrl + '?add_comment', config)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        }
+        catch {
+            let result = null;
+            return result;
+        }
+    }
+
     async getForms(data: any) {
         try {
             const config = {
@@ -823,6 +869,50 @@ export class AddtransactionService {
             return result;
 
         } catch {
+            let result = null;
+            return result;
+        }
+    }
+
+    async getFormDataSet(data: any) {
+        try {
+            const config = {
+                method: 'POST',
+                body: this.getFormData(data)
+            }
+            let result;
+            await fetch(this.resourceUrl + '?form_latest_file', config)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        }
+        catch {
+            let result = null;
+            return result;
+        }
+    }
+
+    async getEventsData(data: any) {
+        try {
+            const config = {
+                method: 'POST',
+                body: this.getFormData(data)
+            }
+            let result;
+            await fetch(this.resourceUrl + '?form_log', config)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        }
+        catch {
             let result = null;
             return result;
         }
