@@ -18,23 +18,31 @@
     direction: rtl;
 }
 
+
 /* width */
+
 .step-box::-webkit-scrollbar {
     width: 5px;
 }
 
+
 /* Track */
+
 .step-box::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
+
 /* Handle */
+
 .step-box::-webkit-scrollbar-thumb {
     background: rgba(136, 136, 136, 0.616);
     border-radius: 8px !important;
 }
 
+
 /* Handle on hover */
+
 .step-box::-webkit-scrollbar-thumb:hover {
     background: rgba(85, 85, 85, 0.644);
 }
@@ -49,6 +57,7 @@ input[type="file"].custom {
     white-space: nowrap;
     width: 1px;
 }
+
 .btn-upload {
     cursor: pointer;
 }
@@ -81,10 +90,10 @@ input[type="file"].custom {
 }
 
 ::ng-deep #chat-window {
-background-color: #bfbfbf26;
-height: 400px;
-padding: 10px;
-overflow-y: scroll;
+    background-color: #bfbfbf26;
+    height: 400px;
+    padding: 10px;
+    overflow-y: scroll;
 }
 
 ::ng-deep .dx-htmleditor {
@@ -112,6 +121,7 @@ overflow-y: scroll;
     text-align: right;
     width: fit-content;
 }
+
 ::ng-deep .message .text {
     font-size: 12px;
     text-align: right;
@@ -135,7 +145,7 @@ overflow-y: scroll;
     vertical-align: middle;
 }
 
-::ng-deep .photo > img {
+::ng-deep .photo>img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -152,21 +162,26 @@ overflow-y: scroll;
     text-align: right;
 }
 
+
 /* width */
+
 ::-webkit-scrollbar {
     width: 5px;
     background-color: transparent;
     transition: all ease-out 0.3s;
 }
 
+
 /* Track */
+
 ::-webkit-scrollbar-track {
     border-radius: 0;
 }
 
+
 /* Handle */
+
 ::-webkit-scrollbar-thumb {
     background: #ccc;
     border-radius: 0;
 }
-

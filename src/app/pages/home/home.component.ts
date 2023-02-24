@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import notify from 'devextreme/ui/notify';
 import { AddtransactionService, FormList } from '../addtransaction/addtransaction.service';
 import { AuthService } from 'src/app/shared/services';
 
@@ -12,6 +13,7 @@ export class HomeComponent {
   dataSource: FormList[];
   popupVisible2 = false;
   popupVisibleInfo = false;
+  popupEvents= false;
   popupInfoTitle: string;
   popup2Title: String;
   popup2Content: String;
@@ -21,6 +23,12 @@ export class HomeComponent {
   public arrayKey2: any;
   public formItem2: any[];
   public colCountByScreen: any;
+
+  popupVisible = false;
+  popupEventsTitle: String;
+  popupEventsData: any[];
+  private comment: String;
+  comments: any[] = [];
 
   notCheckedForms: Number;
   validateForms: Number;
@@ -36,10 +44,6 @@ export class HomeComponent {
   ) {
     this.userInfo = authService.getUser();
     this.user = this.userInfo.__zone_symbol__value.data;    
-    let fullData = addTransactionService.getFormListData();
-    this.dataSource = addTransactionService.getFormListData().filter(
-      item => item.status == "در انتظار تایید"
-    );
 
     this.colCountByScreen = {
       xs: 1,
@@ -48,13 +52,29 @@ export class HomeComponent {
       lg: 3
     };
 
-    this.allForms = fullData.length;
-    this.notCheckedForms = fullData.filter(item => item.status=="در انتظار تایید").length;
-    this.validateForms = fullData.filter(item => item.status=="تایید شده").length;
-    this.notValidateForms = fullData.filter(item => item.status=="نیازمند ویرایش").length;
+   
   }
 
-  
+  ngOnInit() {
+   
+    let data = {
+      'token': this.user.token
+    }
+    this.addTransactionService.getForms(data).then(res => {
+      if(res.status == 200) {
+        let fullData = res.data;
+        this.dataSource = res.data.filter(
+          item => item.status == "100"
+        );
+        this.allForms = fullData.length;
+        this.notCheckedForms = fullData.filter(item => item.status=="100").length;
+        this.validateForms = fullData.filter(item => item.status=="200").length;
+        this.notValidateForms = fullData.filter(item => item.status=="0").length;
+      }
+    });
+
+  }
+ 
   buttonsValidatior(rowData) {
     const result = [rowData.id,rowData.status, rowData.address];
     return result;
@@ -66,8 +86,55 @@ export class HomeComponent {
     this.popupVisible2 = true;
   }
 
-  goToLink(url: string){
-    window.open(url, "_blank");
+  goToLink(id: Number){
+
+    let data = {
+      'token': this.user.token,
+      'form_id': id
+    }
+
+    this.addTransactionService.getFormDataSet(data).then(res => {
+      if(res.status == 200) {
+        window.open(`https://arz-yab.ir/iic_finance/uploads/excel/${res.data.file_url}`, "_blank");
+      } else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      } else if(res.status == 300) {
+        notify("کاربر شما دسترسی مشاهده اطلاعات این فرم را ندارد", 'error', 2000)
+      } else {
+        notify("با عرض پوزش، در دریافت اطلاعات این فرم مشکلی به وجود آمده است", 'error', 2000)
+      } 
+    })
+  }
+
+  StatusValidatior(rowData) {
+    return rowData;
+  }
+  
+  showEvents(id) {
+    this.popupEventsTitle = "تاریخچه رویدادهای | " + this.dataSource.filter(item => item.id == id )[0].title;
+
+    let data = {
+      'token': this.user.token,
+      'form_id': id
+    }
+    this.addTransactionService.getEventsData(data).then(res => {
+      if(res.status == 200) {
+        this.popupEventsData = res.data;
+        this.popupEvents = true;
+      } else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      } else if(res.status == 300) {
+        notify("کاربر شما دسترسی مشاهده اطلاعات این فرم را ندارد", 'error', 2000)
+      } else {
+        notify("با عرض پوزش، در دریافت اطلاعات این فرم مشکلی به وجود آمده است", 'error', 2000)
+        this.popupEventsData = null;
+      }
+    });
+
+    //this.popup2Content = this.dataSource.filter(item => item.id == id )[0].comment;
+
   }
 
   getData(rowData) {
@@ -75,32 +142,20 @@ export class HomeComponent {
     this.popupVisibleInfo = true;
     this.popupInfo = rowData.data;
     this.popupInfoTitle = "فرم " + rowData.data.title;
-
+    const token = this.user.token;
+    const addTransactionService = this.addTransactionService;
+    
     this.formItem2 = [    
       {
-        dataField: 'comment',
-        editorType: "dxTextArea",
-        colSpan: 2,
-        editorOptions: {
-          stylingMode: 'filled',
-          placeholder:"نظر خود را وارد کنید",
-          onValueChanged(data) {
-            this.popupInfo = {...this.popupInfo ,comment: data.value};
-          },
-        },
-        label: {
-          text: "نظر ناظر",
-        }
-      },
-      {
         itemType: "group",
+        colSpan: 1,
         colCount: 2,
         label: {
-          text: "آیا اطلاعات و مشخصات فرم را تایید می کنید؟",
+          text: (rowData.data.status != "100") ? "وضعیت فرم" : "آیا اطلاعات و مشخصات فرم را تایید می کنید؟",
         },
         items: [
           {
-            
+            visible: (rowData.data.status == "100"),
             editorType: 'dxButton',
             editorOptions: {
               width: '100%',
@@ -109,7 +164,28 @@ export class HomeComponent {
               stylingMode: 'outlined',
               text: "بلی",
               onClick() {
-                this.popupInfo = {...this.popupInfo ,status: "تایید شده"};
+                let data = {
+                  'answer': 'accept',
+                  'token': token,
+                  'form_id': rowData.data.id
+                }
+                const reply = "تایید شده" ;
+                addTransactionService.addAnswer(data).then(res => {
+                  if(res.status == 200) {
+                    this.popupInfo = {...this.popupInfo ,status: "200"};
+                    notify(`کاربر گرامی فرم ${data.form_id} در وضعیت ${reply} قرار داده شد`, 'success', 2000)
+                    setTimeout(function(){
+                      location.reload()
+                    },2100);
+                  }else if(res.status == 404) {
+                    notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+                    this.authService.logOut();
+                  } else if(res.status == 300) {
+                    notify("حساب شما دسترسی انجام این فرآیند را ندارد", 'error', 2000)
+                  } else {
+                    notify("با عرض پوزش، در اجرای این فرآیند مشکلی به وجود آمده است", 'error', 2000)
+                  }
+                })
               },
             },
             label: {
@@ -117,7 +193,7 @@ export class HomeComponent {
             },
           },
           {
-            
+            visible: (rowData.data.status == "100"),
             editorType: 'dxButton',
             editorOptions: {
               width: '100%',
@@ -126,15 +202,66 @@ export class HomeComponent {
               stylingMode: 'outlined',
               text: "خیر",
               onClick() {
-                this.popupInfo = {...this.popupInfo ,status: "نیازمند ویرایش"};
+                let data = {
+                  'answer': 'reject',
+                  'token': token,
+                  'form_id': rowData.data.id
+                }
+                const reply = "نیازمند ویرایش" ;
+                addTransactionService.addAnswer(data).then(res => {
+                  if(res.status == 200) {
+                    this.popupInfo = {...this.popupInfo ,status: "0"};
+                    notify(`کاربر گرامی فرم ${data.form_id} در وضعیت ${reply} قرار داده شد`, 'success', 2000)
+                    setTimeout(function(){
+                      location.reload()
+                    },2100);
+                  }else if(res.status == 404) {
+                    notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+                    this.authService.logOut();
+                  } else if(res.status == 300) {
+                    notify("حساب شما دسترسی انجام این فرآیند را ندارد", 'error', 2000)
+                  } else {
+                    notify("با عرض پوزش، در اجرای این فرآیند مشکلی به وجود آمده است", 'error', 2000)
+                  }
+                })
               },
             },
             label: {
               visible: false,
             },
-          }
+          },
+          {
+            visible: (rowData.data.status != "100"),
+            editorType: "dxTextBox",
+            colSpan: 2,
+            editorOptions: {
+              value: (rowData.data.status == "0") ? 'در انتظار ویرایشگر' : "تایید شده",
+              readOnly: true,
+              stylingMode: 'filled'
+            },
+            label: {
+              visible: false
+            }
+          },
         ]
-      },        
+      }, 
+      {
+        dataField: 'address',
+        editorType: 'dxButton',
+        editorOptions: {
+          icon: 'download',
+          type:"success",
+          text:'دانلود فرم',
+          cssClass:"ml-auto",
+          onClick() {
+            window.open(`https://arz-yab.ir/iic_finance/uploads/excel/${address}`, "_blank");
+          },
+        },
+        label: {
+          text: "لینک دانلود"
+        },
+        colSpan:2
+      },  
       {
         dataField: 'id',
         editorType: "dxTextBox",
@@ -172,15 +299,26 @@ export class HomeComponent {
       },
       {
         dataField: 'creatingDate',
-        editorType: "dxDateBox",
+        editorType: "dxTextBox",
         editorOptions: {
           readOnly: true,
           stylingMode: 'filled',
           displayFormat:'yyyy/MM/dd',
-
         },
         label: {
           text: "تاریخ ایجاد",
+        }
+      },
+      {
+        dataField: 'lastEditDate',
+        editorType: "dxTextBox",
+        editorOptions: {
+          readOnly: true,
+          stylingMode: 'filled',
+          displayFormat:'yyyy/MM/dd',
+        },
+        label: {
+          text: "تاریخ آخرین ویرایش",
         }
       },
       {
@@ -244,28 +382,99 @@ export class HomeComponent {
         label: {
           text: "توضیحات",
         }
-      }, 
-      {
-        dataField: 'address',
-        editorType: 'dxButton',
-        editorOptions: {
-          icon: 'download',
-          type:"success",
-          cssClass:"ml-auto",
-          onClick() {
-            this.goToLink(rowData.data.address)
-          },
-        },
-        label: {
-          text: "لینک دانلود"
-        }
-      }     
-    ]
+      }  
+    ];
 
-    this.popupInfoFormData = this.addTransactionService.getFormInfo();
-    for (const [key, value] of Object.entries(this.popupInfoFormData[0])) {
-      this.arrayKey2.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
-    }    
-    //console.log(this.popupInfo);
+    let data = {
+      'token': this.user.token,
+      'form_id': rowData.data.id
+    }
+
+    let address;
+
+    this.addTransactionService.getFormDataSet(data).then(res => {
+      if(res.status == 200) {
+        address = res.data.file_url;
+        this.popupInfoFormData = JSON.parse(res.data.content);
+        if(typeof this.popupInfoFormData == 'object') {
+          for (const [key, value] of Object.entries(this.popupInfoFormData[0])) {
+            this.arrayKey2.push(JSON.parse(`{"key": "${key}" , "type": "${typeof value}"}`))
+          }
+        }
+      } else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      } else if(res.status == 300) {
+        notify("کاربر شما دسترسی مشاهده اطلاعات این فرم را ندارد", 'error', 2000)
+      } else {
+        notify("با عرض پوزش، در دریافت اطلاعات این فرم مشکلی به وجود آمده است", 'error', 2000)
+        this.popupInfoFormData = null;
+      }
+    });
+
+    this.addTransactionService.getEventsData(data).then(res => {
+      if(res.status == 200) {
+        this.comments = res.data.filter(item => item.status.id == 0);
+      } else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      } else if(res.status == 300) {
+        notify("حساب شما دسترسی مشاهده اطلاعات این فرم را ندارد", 'error', 2000)
+      } else {
+        notify("با عرض پوزش، در دریافت اطلاعات این فرم مشکلی به وجود آمده است", 'error', 2000)
+        this.comments = null
+      }
+    });
+  }
+
+  answer(id: Number, type: String) {
+    let data = {
+      'answer': type,
+      'token': this.user.token,
+      'form_id': id
+    }
+    const reply = (type == 'accept') ? "تایید شده" : "در انتظار ویرایش";
+    this.addTransactionService.addAnswer(data).then(res => {
+      if(res.status == 200) {
+        notify(`کاربر گرامی فرم ${data.form_id} در وضعیت ${reply} قرار داده شد`, 'success', 2000)
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      }else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      } else if(res.status == 300) {
+        notify("حساب شما دسترسی انجام این فرآیند را ندارد", 'error', 2000)
+      } else {
+        notify("با عرض پوزش، در اجرای این فرآیند مشکلی به وجود آمده است", 'error', 2000)
+      }
+    })
+  }
+
+  onWheelRight(event: WheelEvent): void {
+    document.getElementById('right-elm').scrollTop += event.deltaY;
+  }
+
+  onWheelLeft(event: WheelEvent): void {
+    document.getElementById('chat-window').scrollTop += event.deltaY;
+  }
+
+  sendComment() {
+    let data = {
+      'content': this.comment,
+      'form_id': this.popupInfo.id,
+      'token': this.user.token,
+    }
+    this.addTransactionService.addComment(data).then(res => {
+      if(res.status==200){
+        notify("دیدگاه شما ثبت شد", 'success', 2000)
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      } else {
+        notify("در فرایند ثبت دیدگاه شما مشکلی پیش آمد", 'success', 2000)
+      }
+    })
+    
   }
 }

@@ -796,6 +796,29 @@ export class AddtransactionService {
         }
     }
 
+    async addAnswer(data: any) {
+
+        try {
+            const config = {
+                method: 'POST',
+                body: this.getFormData(data)
+            }
+            let result;
+            await fetch(this.resourceUrl + `?answer`, config)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        }
+        catch {
+            let result = null;
+            return result;
+        }
+    }
+
     async addComment(data: any) {
 
         try {

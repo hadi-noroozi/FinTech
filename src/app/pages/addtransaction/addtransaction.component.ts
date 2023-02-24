@@ -440,7 +440,6 @@ export class AddtransactionComponent implements OnInit {
     this.records = [];
     this.arrayKey = [];
     this.correctiveId = null;
-    //console.log(this.infoForm, this.records, this.arrayKey, this.correctiveId)
   }
 
   submitOne() {

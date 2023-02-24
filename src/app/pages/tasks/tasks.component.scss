@@ -18,23 +18,31 @@
     direction: rtl;
 }
 
+
 /* width */
+
 .step-box::-webkit-scrollbar {
     width: 5px;
 }
 
+
 /* Track */
+
 .step-box::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
+
 /* Handle */
+
 .step-box::-webkit-scrollbar-thumb {
     background: rgba(136, 136, 136, 0.616);
     border-radius: 8px !important;
 }
 
+
 /* Handle on hover */
+
 .step-box::-webkit-scrollbar-thumb:hover {
     background: rgba(85, 85, 85, 0.644);
 }
@@ -49,6 +57,7 @@ input[type="file"].custom {
     white-space: nowrap;
     width: 1px;
 }
+
 .btn-upload {
     cursor: pointer;
 }
@@ -75,47 +84,46 @@ input[type="file"].custom {
 }
 
 ::ng-deep * {
-  font-family: iranyekan;
+    font-family: iranyekan;
 }
 
 .text-right {
-  text-align: right;
+    text-align: right;
 }
 
 .content-block {
-  font-size: 1rem !important;
+    font-size: 1rem !important;
 }
 
 ::ng-deep * {
-  font-family: iranyekan;
+    font-family: iranyekan;
 }
 
 ::ng-deep .dx-popup-content {
-  padding: 0;
+    padding: 0;
 }
 
-
 ::ng-deep .dx-texteditor-input {
-  font-family: 'iranyekan' !important;
+    font-family: 'iranyekan' !important;
 }
 
 ::ng-deep .dx-field-item-label.dx-field-item-label-location-top {
-  text-align: right !important;
+    text-align: right !important;
 }
 
 ::ng-deep .dx-toolbar-label {
-  font-size: 1.1rem !important;
+    font-size: 1.1rem !important;
 }
 
 ::ng-deep .btn-box .dx-button.dx-button-default {
-  border-radius: 0;
-  box-shadow: none;
-  height: 50px;
-  width: 180px;
+    border-radius: 0;
+    box-shadow: none;
+    height: 50px;
+    width: 180px;
 }
 
 ::ng-deep .dx-card {
-  box-shadow: none;
+    box-shadow: none;
 }
 
 .content-block {
@@ -124,4 +132,105 @@ input[type="file"].custom {
 
 ::ng-deep .dx-card {
     box-shadow: none;
+}
+
+
+/* width */
+
+::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
+    transition: all ease-out 0.3s;
+}
+
+
+/* Track */
+
+::-webkit-scrollbar-track {
+    border-radius: 0;
+}
+
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 0;
+}
+
+::ng-deep .dx-popup-title .dx-toolbar-before * {
+    font-size: 14px !important;
+}
+
+::ng-deep #chat-window {
+    background-color: #bfbfbf26;
+    height: 400px;
+    padding: 10px;
+    overflow-y: scroll;
+}
+
+::ng-deep .dx-htmleditor {
+    height: 100px;
+}
+
+::ng-deep #send {
+    float: right;
+    margin: 10px 0;
+}
+
+::ng-deep .message {
+    height: fit-content;
+    background-color: inherit;
+    min-width: 51%;
+    display: inline-block;
+    max-width: 90%;
+    border-radius: 5px;
+    margin: 5px 0;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+::ng-deep .message .content {
+    text-align: right;
+    width: fit-content;
+}
+
+::ng-deep .message .text {
+    font-size: 12px;
+    text-align: right;
+    line-height: 1.7;
+}
+
+::ng-deep .name {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+::ng-deep .date {
+    opacity: 0.7;
+    font-size: 11px;
+}
+
+::ng-deep .photo {
+    float: right;
+    height: 100%;
+    align-items: center;
+    vertical-align: middle;
+}
+
+::ng-deep .photo>img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+::ng-deep .dx-htmleditor {
+    box-shadow: none !important;
+    border: 1px solid #bfbfbf26 !important;
+    border-radius: 0;
+}
+
+::ng-deep .dx-htmleditor-content {
+    text-align: right;
 }
