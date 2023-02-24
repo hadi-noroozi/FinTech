@@ -29,6 +29,7 @@ export class TasksComponent {
   popupEventsData: any[];
   private comment: String;
   comments: any[] = [];
+  mentionUsers: any[];
 
   userInfo: any;
   public user: any;
@@ -576,6 +577,14 @@ export class TasksComponent {
       'token': this.user.token,
       'form_id': rowData.data.id
     }
+
+    let users = [
+      rowData.data.validator,
+      rowData.data.editor,
+      rowData.data.applicent
+    ]
+
+    this.mentionUsers = [...new Set(users)];
 
     let address;
 

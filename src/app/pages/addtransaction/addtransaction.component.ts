@@ -41,6 +41,7 @@ export class AddtransactionComponent implements OnInit {
   popupEventsData: any[];
   private comment: String;
   comments: any[] = [];
+  mentionUsers: any[];
 
   correctiveId: Number;
 
@@ -788,6 +789,14 @@ export class AddtransactionComponent implements OnInit {
       'token': this.user.token,
       'form_id': rowData.data.id
     }
+    
+    let users = [
+      rowData.data.validator,
+      rowData.data.editor,
+      rowData.data.applicent
+    ]
+
+    this.mentionUsers = [...new Set(users)];
 
     this.addTransactionService.getFormDataSet(data).then(res => {
       if(res.status == 200) {
@@ -849,5 +858,7 @@ export class AddtransactionComponent implements OnInit {
     })
     
   }
+
+
 }
 
