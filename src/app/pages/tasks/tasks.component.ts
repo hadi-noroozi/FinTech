@@ -33,6 +33,8 @@ export class TasksComponent {
 
   userInfo: any;
   public user: any;
+  public statuses: any[];
+  popupOption: any;
 
   constructor( 
     private addTransactionService: AddtransactionService,
@@ -46,6 +48,23 @@ export class TasksComponent {
       sm: 2,
       md: 2,
       lg: 3
+    };
+
+    this.statuses = [{
+        text: 'تایید شده',
+        value: ['status', '=', '200'],
+      }, {
+        text: 'در انتظار ویرایشگر',
+        value: ['status', '=', '0'],
+      }, {
+        text: 'منتظر تایید',
+        value: ['status', '=', '100'],
+      }
+    ];
+
+    this.popupOption = {
+      cancel: 'لغو',
+      ok: 'تایید',
     };
   }
 

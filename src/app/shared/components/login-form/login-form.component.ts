@@ -15,16 +15,28 @@ import { AuthService } from '../../services';
 export class LoginFormComponent {
   loading = false;
   formData: any = {};
+  remembering: boolean;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {
+
+  }
+
+  ngOnInit() {
+    if(this.authService.rememberMe) {
+      this.formData = JSON.parse(this.authService.rememberMe)
+      this.remembering = true;
+    } else {
+      this.remembering = false;
+    }
+  }
 
   async onSubmit(e) {
     e.preventDefault();
-    const { email, password } = this.formData;
-    //console.log([email, password])
+    const { email, password, rememberMe, forgotMe } = this.formData;
+
     this.loading = true;
 
-    const result = await this.authService.logIn(email, password);
+    const result = await this.authService.logIn(email, password, rememberMe, forgotMe);
     if (!result.isOk) {
       this.loading = false;
       notify(result.message, 'error', 2000);

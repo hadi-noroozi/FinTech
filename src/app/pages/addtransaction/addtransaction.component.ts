@@ -76,6 +76,8 @@ export class AddtransactionComponent implements OnInit {
 
   formType: String;
   fiscalYearList: any[];
+  public statuses: any[];
+  popupOption: any;
 
   constructor(
     private addTransactionService: AddtransactionService,
@@ -101,6 +103,23 @@ export class AddtransactionComponent implements OnInit {
       sm: 1,
       md: 2,
       lg: 3
+    };
+
+    this.statuses = [{
+        text: 'تایید شده',
+        value: ['status', '=', '200'],
+      }, {
+        text: 'در انتظار ویرایشگر',
+        value: ['status', '=', '0'],
+      }, {
+        text: 'منتظر تایید',
+        value: ['status', '=', '100'],
+      }
+    ];
+
+    this.popupOption = {
+      cancel: 'لغو',
+      ok: 'تایید',
     };
 
   }
@@ -256,7 +275,7 @@ export class AddtransactionComponent implements OnInit {
         },  
         {
           dataField: 'fiscalPeriod',
-          editorType: "dxSelectBox",
+          editorType: this.correctiveId ?  "dxTextBox" : "dxSelectBox",
           editorOptions: {
             dataSource: [
               "فروردین",
@@ -457,7 +476,7 @@ export class AddtransactionComponent implements OnInit {
     this.longtabs[1].disabled = true;
     this.longtabs[2].disabled = false;
     this.selectedIndex = 2;
-    
+    console.log(JSON.stringify(this.records).length)
   }
 
   submitThree() {

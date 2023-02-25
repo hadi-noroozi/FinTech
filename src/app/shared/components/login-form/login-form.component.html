@@ -19,8 +19,12 @@
       <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
 
-    <dxi-item dataField="rememberMe" editorType="dxCheckBox" 
+    <dxi-item dataField="rememberMe" editorType="dxCheckBox" [visible]="!remembering" 
       [editorOptions]="{ text: 'مرا به خاطر بسپار', elementAttr: { class: 'form-text'} , rtlEnabled: true}">
+      <dxo-label [visible]="false"></dxo-label>
+    </dxi-item>
+    <dxi-item dataField="forgotMe" editorType="dxCheckBox" [visible]="remembering"
+      [editorOptions]="{ text: 'مرا از یاد ببر!', elementAttr: { class: 'form-text'} , rtlEnabled: true}">
       <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
 
@@ -29,12 +33,14 @@
       </dxo-button-options>
     </dxi-item>
 
+    <!-- 
     <dxi-item>
       <div class="link">
         <a routerLink="/reset-password">گذرواژه خود را فراموش کرده ام
         </a>
       </div>
     </dxi-item>
+     -->
 
     <ng-container *dxTemplate="let item of 'signInTemplate'">
       <span class="dx-button-text">

@@ -42,6 +42,7 @@ const adminUser = {
 export class AuthService {
   //private _user = defaultUser;
   private _user;
+ 
   private resourceUrl = 'https://arz-yab.ir/iic_finance/API/v0.1/controller.php?login';
 
   get loggedIn(): boolean {
@@ -50,6 +51,14 @@ export class AuthService {
     }
     
     return !!this._user;
+  }
+
+  get rememberMe(): string {
+    if(localStorage.getItem('AUTH_ATTRIBUTES')) {
+      return localStorage.getItem('AUTH_ATTRIBUTES')
+    } else {
+      return null
+    }
   }
 
   get role(): string {
@@ -65,7 +74,12 @@ export class AuthService {
     private router: Router
   ) { }
 
-  async logIn(email: string, password: string) {
+  async logIn(
+    email: string, 
+    password: string, 
+    rememberMe: boolean, 
+    forgotMe: boolean
+    ) {
 
     try {
       // Send request
@@ -94,6 +108,17 @@ export class AuthService {
                             this.router.navigate([routePath]);
                             localStorage.setItem('STATE', 'true');
                             localStorage.setItem('USER', JSON.stringify(this._user));
+                            if(rememberMe) {
+                              localStorage.setItem('AUTH_ATTRIBUTES', JSON.stringify(
+                                {
+                                  email: email,
+                                  password: password
+                                }
+                              ));
+                            }
+                            if(forgotMe) {
+                              localStorage.removeItem('AUTH_ATTRIBUTES')
+                            }
                             result = {
                               isOk: true,
                               data: this._user
@@ -219,9 +244,8 @@ export class AuthService {
 
   async logOut() {
     this._user = null;
-    localStorage.setItem('STATE', 'false');
-    localStorage.setItem('USER',null);
-    localStorage.clear();
+    localStorage.removeItem('STATE');
+    localStorage.removeItem('USER');
     this.router.navigate(['/login-form']);
   }
 

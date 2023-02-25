@@ -115,7 +115,7 @@ const longtabs: Longtab[] = [
       focusStateEnabled: false
   },
   {
-      text: "4. و ارجاع به ناظر",
+      text: "4. ارجاع به ناظر",
       icon:'arrowup',
       disabled: true,
       link:'step-five',

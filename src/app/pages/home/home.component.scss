@@ -184,3 +184,11 @@
 ::ng-deep .dx-htmleditor-content {
     text-align: right;
 }
+
+::ng-deep .dx-header-filter-menu .dx-item-content {
+    font-size: 13px;
+}
+
+::ng-deep .dx-list-select-all {  
+    display:none;  
+}

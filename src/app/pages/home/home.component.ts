@@ -11,6 +11,8 @@ import { AuthService } from 'src/app/shared/services';
 export class HomeComponent {
 
   dataSource: FormList[];
+
+  popupVisible = false;
   popupVisible2 = false;
   popupVisibleInfo = false;
   popupEvents= false;
@@ -18,13 +20,44 @@ export class HomeComponent {
   popup2Title: String;
   popup2Content: String;
 
+  longtabs = [
+    {
+      text: "1. تایید اولیه",
+      icon:'add',
+      disabled: true,
+      link:'step-one',
+      focusStateEnabled: false
+    },
+    {
+      text: "2. ارجاع به ویرایشگر",
+      icon:'arrowup',
+      disabled: true,
+      link:'step-two',
+      focusStateEnabled: false
+    }
+  ]
+  selectedIndex: number = 0;
+  selectItem: boolean = false;
+
+  public validators: any[];
+  public categories: any[];
+  public editors: any[];
+
+  btnOne: boolean = true;
+  btnTwo: boolean = false;
+
+  public infoForm: any;
+  public formData: any;
+  public formItem: any[];
+  public formItemRead: any[];
+  fiscalYearList: any[];
+
   public popupInfo: any;
   public popupInfoFormData: any[];
   public arrayKey2: any;
   public formItem2: any[];
   public colCountByScreen: any;
 
-  popupVisible = false;
   popupEventsTitle: String;
   popupEventsData: any[];
   private comment: String;
@@ -38,6 +71,8 @@ export class HomeComponent {
 
   userInfo: any;
   public user: any;
+  public statuses: any[];
+  popupOption: any;
 
   constructor( 
     public addTransactionService: AddtransactionService,
@@ -53,10 +88,55 @@ export class HomeComponent {
       lg: 3
     };
 
+    this.statuses = [{
+        text: 'تایید شده',
+        value: ['status', '=', '200'],
+      }, {
+        text: 'در انتظار ویرایشگر',
+        value: ['status', '=', '0'],
+      }, {
+        text: 'منتظر تایید',
+        value: ['status', '=', '100'],
+      }
+    ];
+
+    this.popupOption = {
+      cancel: 'لغو',
+      ok: 'تایید',
+    };
+
+    this.fiscalYearList = [
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]),
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 1,
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 2,
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 3,
+      parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 4
+    ];
+
+    this.editors = [
+      {
+        id: 2,
+        name: 'علیرضا عمرانی'
+      }, {
+        id: 3,
+        name: 'هادی نوروزی'
+      } , {
+        id: 4,
+        name: 'اشکان چکاک'
+      }
+    ]
    
   }
 
   ngOnInit() {
+
+    this.addTransactionService.getCategories().then( res =>{
+      this.categories = res.data; 
+    });
+
+    this.addTransactionService.getValidators().then( res => {
+      this.validators = res.data;
+    });
    
     let data = {
       'token': this.user.token
@@ -485,5 +565,362 @@ export class HomeComponent {
       }
     })
     
+  }
+
+  
+  showInfo() {
+    this.fileReset();
+    this.popupVisible = true;
+    this.formItem = [
+      {
+        dataField: 'title',
+        editorType: "dxTextBox",
+        colSpan: 2,
+        editorOptions: {
+          stylingMode: 'filled',
+          placeholder:"عنوان فرم را تعیین کنید",
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,title: data.value};
+          },
+        },
+        label: {
+          text: "عنوان فرم",
+        }
+      },
+      {
+        editorType: "dxTextBox",
+        editorOptions: {
+          readOnly: true,
+          stylingMode: 'filled',
+          value: new Date(Date.now()).toLocaleDateString('fa-IR')
+        },
+        label: {
+          text: "تاریخ ایجاد",
+        }
+      },      
+      {
+        dataField: 'category',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.categories,
+          stylingMode: 'filled',
+          displayExpr:"title",
+          valueExpr:"id",
+          placeholder:"نوع فرم را تعیین کنید",
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,catgory: data.value};
+          },
+        },
+        label: {
+          text: "دسته بندی",
+        }
+      },
+      {
+        dataField: 'editor',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.editors,
+          stylingMode: 'filled',
+          displayExpr:"name",
+          valueExpr:"id",
+          placeholder:"ویرایشگر فرم را تعیین کنید",
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,editor: data.value};
+          },
+        },
+        label: {
+          text: "ویرایش کننده",
+        }
+      },
+      {
+        dataField: 'validator',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.validators,
+          displayExpr:"name",
+          valueExpr:"id",
+          placeholder:"کاربر ناظر را تعیین کنید",
+          stylingMode: 'filled',
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,validator: data.value};
+          },
+        },
+        label: {
+          text: "ناظر",
+        }
+      },
+      {
+        dataField: 'fiscalYear',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.fiscalYearList,
+          placeholder:"سال مالی را وارد کنید",
+          stylingMode: 'filled',
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,fiscalYear: data.value};
+          },
+        },
+        label: {
+          text: "سال مالی",
+        }
+      },  
+      {
+        dataField: 'fiscalPeriod',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: [
+            "فروردین",
+            "اردیبهشت",
+            "خرداد",
+            "تیر",
+            "مرداد",
+            "شهریور",
+            "مهر",
+            "آبان",
+            "آذر",
+            "دی",
+            "بهمن",
+            "اسفند",
+          ],
+          placeholder:"دوره مالی را وارد کنید",
+          stylingMode: 'filled',
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,fiscalPeriod: data.value};
+          },
+        },
+        label: {
+          text: "دوره مالی",
+        }
+      },      
+      {
+        dataField: 'description',
+        editorType: 'dxTextBox',
+        colSpan: 2,
+        editorOptions: {
+          maxLength: 280,
+          placeholder:"توضیحات پیوست را وارد کنید",
+          stylingMode: 'filled',
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,description: data.value};
+          },
+        },
+        label: {
+          text: "توضیحات",
+        }
+      },      
+    ];
+  }
+
+  fileReset() {
+    this.popupVisible = false;
+    this.infoForm = {};
+    this.formData = {};
+    this.formItem = [];
+    this.formItemRead = [];
+    this.btnOne = true;
+    this.btnTwo = false;
+    this.selectedIndex = 0;
+  }
+
+  submitOne() {
+    this.btnOne = false;
+    this.btnTwo = true;
+    this.longtabs[0].disabled = true;
+    this.longtabs[1].disabled = false;
+    this.selectedIndex = 1;
+    this.formItemRead = [
+      {
+        dataField: 'title',
+        editorType: "dxTextBox",
+        colSpan: 2,
+        editorOptions: {
+          stylingMode: 'filled',
+          placeholder:"عنوان فرم را تعیین کنید",
+          readOnly: true,
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,title: data.value};
+          },
+        },
+        label: {
+          text: "عنوان فرم",
+        }
+      },
+      {
+        editorType: "dxTextBox",
+        editorOptions: {
+          readOnly: true,
+          stylingMode: 'filled',
+          value: new Date(Date.now()).toLocaleDateString('fa-IR')
+        },
+        label: {
+          text: "تاریخ ایجاد",
+        }
+      },      
+      {
+        dataField: 'category',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.categories,
+          stylingMode: 'filled',
+          displayExpr:"title",
+          valueExpr:"id",
+          placeholder:"نوع فرم را تعیین کنید",
+          readOnly: true,
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,catgory: data.value};
+          },
+        },
+        label: {
+          text: "دسته بندی",
+        }
+      },
+      {
+        dataField: 'editor',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.editors,
+          stylingMode: 'filled',
+          displayExpr:"name",
+          valueExpr:"id",
+          readOnly: true,
+          placeholder:"ویرایشگر فرم را تعیین کنید",
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,editor: data.value};
+          },
+        },
+        label: {
+          text: "ویرایش کننده",
+        }
+      },
+      {
+        dataField: 'validator',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.validators,
+          displayExpr:"name",
+          valueExpr:"id",
+          placeholder:"کاربر ناظر را تعیین کنید",
+          stylingMode: 'filled',
+          readOnly: true,
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,validator: data.value};
+          },
+        },
+        label: {
+          text: "ناظر",
+        }
+      },
+      {
+        dataField: 'fiscalYear',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: this.fiscalYearList,
+          placeholder:"سال مالی را وارد کنید",
+          stylingMode: 'filled',
+          readOnly: true,
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,fiscalYear: data.value};
+          },
+        },
+        label: {
+          text: "سال مالی",
+        }
+      },  
+      {
+        dataField: 'fiscalPeriod',
+        editorType: "dxSelectBox",
+        editorOptions: {
+          dataSource: [
+            "فروردین",
+            "اردیبهشت",
+            "خرداد",
+            "تیر",
+            "مرداد",
+            "شهریور",
+            "مهر",
+            "آبان",
+            "آذر",
+            "دی",
+            "بهمن",
+            "اسفند",
+          ],
+          placeholder:"دوره مالی را وارد کنید",
+          stylingMode: 'filled',
+          readOnly: true,
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,fiscalPeriod: data.value};
+          },
+        },
+        label: {
+          text: "دوره مالی",
+        }
+      },      
+      {
+        dataField: 'description',
+        editorType: 'dxTextBox',
+        colSpan: 2,
+        editorOptions: {
+          maxLength: 280,
+          placeholder:"توضیحات پیوست را وارد کنید",
+          stylingMode: 'filled',
+          readOnly: true,
+          onValueChanged(data) {
+            this.infoForm = {...this.infoForm ,description: data.value};
+          },
+        },
+        label: {
+          text: "توضیحات",
+        }
+      },      
+    ];
+  }
+
+  submitTwo() {
+    this.btnTwo = false;
+    this.longtabs[1].disabled = true;
+    this.longtabs[0].disabled = false;
+    let data = {
+      'title': this.infoForm.title,
+      'fiscalYear':this.infoForm.fiscalYear,
+      'fiscalPeriod': this.infoForm.fiscalPeriod,
+      'description': this.infoForm.description,
+      'editor': this.infoForm.editor,
+      'category': this.infoForm.category,
+      'validator': this.user['user_id'],
+      'token': this.user.token
+    }
+    this.addTransactionService.addForm(data).then(res => {
+      if(res.status == 200) {
+        this.fileReset();
+        console.log(res)
+        notify("فرم  درخواستی شما با اطلاعات مربوطه ایجاد گردید", 'success', 2000);
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      }
+      else if(res.status == 404) {
+        notify("حساب کاربری شما معتبر نمی باشد، لطفا دوباره وارد شود", 'error', 2000)
+        this.authService.logOut();
+      }
+      else if(res.status == 300) {
+        notify("کاربر شما دسترسی ایجاد چنین فرمی را ندارد، لطفا پس از تصحیح اطلاعات دوباره تلاش کنید", 'error', 2000)
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      } else {
+        notify("در فرآیند ایجاد فرم مشکلی وجود دارد، لطفا دوباره تلاش کنید", 'error', 2000)
+        setTimeout(function(){
+          location.reload()
+        },2100);
+      }
+    })
+  }
+
+  returnOne() {
+    this.btnOne = true;
+    this.btnTwo = false;
+    this.longtabs[0].disabled = false;
+    this.longtabs[1].disabled = true;
+    this.selectedIndex = 0;
   }
 }

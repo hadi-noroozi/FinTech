@@ -185,3 +185,11 @@ input[type="file"].custom {
     background: #ccc;
     border-radius: 0;
 }
+
+::ng-deep .dx-header-filter-menu .dx-item-content {
+    font-size: 13px;
+}
+
+::ng-deep .dx-list-select-all {  
+    display:none;  
+}
