@@ -897,6 +897,25 @@ export class AddtransactionService {
         }
     }
 
+    async getUsers(catId? : number) {
+        try {
+            let result;
+            await fetch(catId ? 
+                        this.resourceUrl + `?get_users&users_category=${catId}` :  
+                        this.resourceUrl + '?get_users')
+                    .then((response) => response.json())
+                    .then((res) => {
+                        result = res;
+                    });
+            
+            return result;
+
+        } catch {
+            let result = null;
+            return result;
+        }
+    }
+
     async getFormDataSet(data: any) {
         try {
             const config = {

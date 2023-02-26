@@ -74,6 +74,8 @@ export class HomeComponent {
   public statuses: any[];
   popupOption: any;
 
+  disableUser: boolean = true;
+
   constructor( 
     public addTransactionService: AddtransactionService,
     public authService: AuthService,
@@ -113,18 +115,18 @@ export class HomeComponent {
       parseInt(new Intl.DateTimeFormat('fa-u-ca-persian-nu-latn').format(new Date()).split("/")[0]) + 4
     ];
 
-    this.editors = [
-      {
-        id: 2,
-        name: 'علیرضا عمرانی'
-      }, {
-        id: 3,
-        name: 'هادی نوروزی'
-      } , {
-        id: 4,
-        name: 'اشکان چکاک'
-      }
-    ]
+    // this.editors = [
+    //   {
+    //     user_id: 2,
+    //     name: 'علیرضا عمرانی'
+    //   }, {
+    //     user_id: 3,
+    //     name: 'هادی نوروزی'
+    //   } , {
+    //     user_id: 4,
+    //     name: 'اشکان چکاک'
+    //   }
+    // ]
    
   }
 
@@ -137,6 +139,10 @@ export class HomeComponent {
     this.addTransactionService.getValidators().then( res => {
       this.validators = res.data;
     });
+
+    this.addTransactionService.getUsers().then( res => {
+      this.editors = res.data;
+    })
    
     let data = {
       'token': this.user.token
@@ -569,8 +575,10 @@ export class HomeComponent {
 
   
   showInfo() {
+    var editorss = this.editors;
     this.fileReset();
     this.popupVisible = true;
+    let addTransactionService = this.addTransactionService;
     this.formItem = [
       {
         dataField: 'title',
@@ -609,6 +617,13 @@ export class HomeComponent {
           placeholder:"نوع فرم را تعیین کنید",
           onValueChanged(data) {
             this.infoForm = {...this.infoForm ,catgory: data.value};
+            if(data.value) {
+              addTransactionService.getUsers(data.value).then(res => {
+                this.editors = res.data;
+                editorss = res.data;
+                console.log(this.editorss)
+              })
+            }
           },
         },
         label: {
@@ -619,7 +634,8 @@ export class HomeComponent {
         dataField: 'editor',
         editorType: "dxSelectBox",
         editorOptions: {
-          dataSource: this.editors,
+          elementAttr: {id: 'editorItem'},
+          dataSource: editorss,
           stylingMode: 'filled',
           displayExpr:"name",
           valueExpr:"id",
@@ -709,6 +725,7 @@ export class HomeComponent {
         }
       },      
     ];
+    
   }
 
   fileReset() {
