@@ -374,7 +374,7 @@ export class AddtransactionComponent implements OnInit {
           data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
         } else {
           notify("کاربر گرامی ساختار فایل مورد نظر مطابق با فرم مربوطه شما نمی باشد، لطفا فرم صحیح را ارسال کنید", 'error', 2000)
-          this.fileReset();
+          this.fileReset('error');
         }
 
       } else if(this.user.categorycode == 2) {
@@ -398,7 +398,7 @@ export class AddtransactionComponent implements OnInit {
           data = XLSX.utils.sheet_to_json(wd, {blankrows: false});          
         } else {
           notify("کاربر گرامی ساختار فایل مورد نظر مطابق با فرم مربوطه شما نمی باشد، لطفا فرم صحیح را ارسال کنید", 'error', 2000)
-          this.fileReset();
+          this.fileReset('error');
         }
         
       } else if( this.user.categorycode == 3) {
@@ -438,7 +438,7 @@ export class AddtransactionComponent implements OnInit {
           data = XLSX.utils.sheet_to_json(wd, {blankrows: false});
         } else {
           notify("کاربر گرامی ساختار فایل مورد نظر مطابق با فرم مربوطه شما نمی باشد، لطفا فرم صحیح را ارسال کنید", 'error', 2000)
-          this.fileReset();
+          this.fileReset('error');
         }
 
       }
@@ -454,12 +454,15 @@ export class AddtransactionComponent implements OnInit {
 
   }
 
-  fileReset() {
+  fileReset(text? : string) {
     this.infoForm = {};
     this.headRecords = [];
     this.records = [];
     this.arrayKey = [];
-    this.correctiveId = null;
+    this.popupVisible = false;
+    if( text == 'error') {
+      this.correctiveId = null;
+    }
   }
 
   submitOne() {
